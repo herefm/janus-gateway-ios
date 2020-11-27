@@ -225,9 +225,9 @@ NSString *letters = @"abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ012345
 
     NSDictionary *body = @{
                            @"request": @"join",
-                           @"room": @1234,
+                           @"room": @"ZInARgyrVYXjj2NukBNu",
                            @"ptype": @"publisher",
-                           @"display": @"ios webrtc",
+                           @"display": @"j9s1h5MVf2OJ5eHIK2zU43uJufk2",
                            };
     NSDictionary *joinMessage = @{
                                   @"janus": @"message",
@@ -345,7 +345,7 @@ NSString *letters = @"abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ012345
 
     NSDictionary *body = @{
                            @"request": @"join",
-                           @"room": @1234,
+                           @"room": @"ZInARgyrVYXjj2NukBNu",
                            @"ptype": @"listener",
                            @"feed": handle.feedId,
                            };
@@ -366,7 +366,7 @@ NSString *letters = @"abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ012345
 
     NSDictionary *body = @{
                               @"request": @"start",
-                              @"room": @1234,
+                              @"room": @"ZInARgyrVYXjj2NukBNu",
                               };
 
     NSString *type = [RTCSessionDescription stringForType:sdp.type];

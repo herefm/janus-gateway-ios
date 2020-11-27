@@ -32,7 +32,7 @@ int height = 0;
     _localView = [[RTCCameraPreviewView alloc] initWithFrame:CGRectMake(0, 0, 480, 360)];
     [self.view addSubview:_localView];
 
-    NSURL *url = [[NSURL alloc] initWithString:@"ws://127.0.0.1:8088"];
+    NSURL *url = [[NSURL alloc] initWithString:@"ws://v2.here.fm"];
     websocket = [[WebSocketChannel alloc] initWithURL: url];
     websocket.delegate = self;
 
@@ -63,10 +63,14 @@ int height = 0;
 }
 
 - (RTCIceServer *)defaultSTUNServer {
-    NSArray *array = [NSArray arrayWithObject:@"turn:12.205.13.145:xx"];
+    NSArray *array = [NSArray arrayWithObjects:
+                      @"stun:turn1.here.fm:3478?transport=udp",
+                      @"stun:turn2.here.fm:3478?transport=udp",
+                      @"turn:turn1.here.fm:3478?transport=udp",
+                      @"turn:turn2.here.fm:3478?transport=udp", nil];
     return [[RTCIceServer alloc] initWithURLStrings:array
-                                           username:@"ling"
-                                         credential:@"ling1234"];
+                                           username:@"officeparty"
+                                         credential:@"officeparty"];
 }
 
 - (RTCPeerConnection *)createPeerConnection {
@@ -175,7 +179,7 @@ int height = 0;
 - (void)videoView:(RTCEAGLVideoView *)videoView didChangeVideoSize:(CGSize)size {
     CGRect rect = videoView.frame;
     rect.size = size;
-    NSLog(@"========didChangeVideiSize %fx%f", size.width, size.height);
+    NSLog(@"========didChangeVideoSize %fx%f", size.width, size.height);
     videoView.frame = rect;
 }
 
