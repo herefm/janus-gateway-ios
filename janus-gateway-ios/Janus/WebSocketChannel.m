@@ -3,9 +3,7 @@
 
 #import "WebRTC/RTCLogging.h"
 #import "SRWebSocket.h"
-#import "JanusTransaction.h"
-#import "JanusHandle.h"
-
+#import "janus_gateway_ios-Swift.h"
 
 static NSString const *kJanus = @"janus";
 static NSString const *kJanusData = @"data";

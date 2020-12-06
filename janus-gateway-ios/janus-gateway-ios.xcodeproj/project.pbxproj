@@ -21,6 +21,9 @@
 		279F899E1E1BBECE00B651E7 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 279F899C1E1BBECE00B651E7 /* Main.storyboard */; };
 		279F89A01E1BBECE00B651E7 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 279F899F1E1BBECE00B651E7 /* Assets.xcassets */; };
 		279F89A31E1BBECE00B651E7 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 279F89A11E1BBECE00B651E7 /* LaunchScreen.storyboard */; };
+		88855B652571C48E00951C57 /* JanusHandle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 88855B642571C48E00951C57 /* JanusHandle.swift */; };
+		889C6FAD257B413600E06446 /* JanusTransaction.swift in Sources */ = {isa = PBXBuildFile; fileRef = 889C6FAC257B413600E06446 /* JanusTransaction.swift */; };
+		889C6FAF257B480700E06446 /* JanusConnection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 889C6FAE257B480700E06446 /* JanusConnection.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -69,6 +72,10 @@
 		279F89A41E1BBECE00B651E7 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		279F89AA1E1BBFD300B651E7 /* WebRTC.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = WebRTC.framework; sourceTree = "<group>"; };
 		639F7C4E4E0B1E1FBC672BD9 /* Pods-Janus.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Janus.debug.xcconfig"; path = "Pods/Target Support Files/Pods-Janus/Pods-Janus.debug.xcconfig"; sourceTree = "<group>"; };
+		88855B632571C48D00951C57 /* janus-gateway-ios-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "janus-gateway-ios-Bridging-Header.h"; sourceTree = "<group>"; };
+		88855B642571C48E00951C57 /* JanusHandle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JanusHandle.swift; sourceTree = "<group>"; };
+		889C6FAC257B413600E06446 /* JanusTransaction.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JanusTransaction.swift; sourceTree = "<group>"; };
+		889C6FAE257B480700E06446 /* JanusConnection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JanusConnection.swift; sourceTree = "<group>"; };
 		B0EDAAEFD9A7DD4C14599CFA /* libPods-Janus.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-Janus.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		D10966B05AAC6A5B5314B7E0 /* Pods-janus-gateway-ios.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-janus-gateway-ios.release.xcconfig"; path = "Pods/Target Support Files/Pods-janus-gateway-ios/Pods-janus-gateway-ios.release.xcconfig"; sourceTree = "<group>"; };
 		DBB9CB144A52379C61B832DF /* libPods-janus-gateway-ios.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-janus-gateway-ios.a"; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -139,6 +146,10 @@
 				279F89A41E1BBECE00B651E7 /* Info.plist */,
 				279F89AA1E1BBFD300B651E7 /* WebRTC.framework */,
 				279F89931E1BBECE00B651E7 /* Supporting Files */,
+				88855B642571C48E00951C57 /* JanusHandle.swift */,
+				889C6FAC257B413600E06446 /* JanusTransaction.swift */,
+				889C6FAE257B480700E06446 /* JanusConnection.swift */,
+				88855B632571C48D00951C57 /* janus-gateway-ios-Bridging-Header.h */,
 			);
 			path = Janus;
 			sourceTree = "<group>";
@@ -201,6 +212,7 @@
 					279F898F1E1BBECE00B651E7 = {
 						CreatedOnToolsVersion = 8.2.1;
 						DevelopmentTeam = JX5W6VQ3A8;
+						LastSwiftMigration = 1150;
 						ProvisioningStyle = Automatic;
 						SystemCapabilities = {
 							com.apple.BackgroundModes = {
@@ -268,6 +280,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				88855B652571C48E00951C57 /* JanusHandle.swift in Sources */,
 				279F899B1E1BBECE00B651E7 /* ViewController.m in Sources */,
 				27078DBF1E1E1932002199B5 /* JanusTransaction.m in Sources */,
 				27078DA81E1C0D0C002199B5 /* RTCSessionDescription+JSON.m in Sources */,
@@ -275,6 +288,8 @@
 				27078DB91E1E10DB002199B5 /* JanusHandle.m in Sources */,
 				27078DC21E1E3E3E002199B5 /* JanusConnection.m in Sources */,
 				279F89981E1BBECE00B651E7 /* AppDelegate.m in Sources */,
+				889C6FAD257B413600E06446 /* JanusTransaction.swift in Sources */,
+				889C6FAF257B480700E06446 /* JanusConnection.swift in Sources */,
 				279F89951E1BBECE00B651E7 /* main.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -396,6 +411,7 @@
 			baseConfigurationReference = 0F29BBA87E5964CEE3CB5EC7 /* Pods-janus-gateway-ios.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CLANG_ENABLE_MODULES = YES;
 				DEVELOPMENT_TEAM = JX5W6VQ3A8;
 				ENABLE_BITCODE = NO;
 				FRAMEWORK_SEARCH_PATHS = (
@@ -408,6 +424,9 @@
 				ONLY_ACTIVE_ARCH = YES;
 				PRODUCT_BUNDLE_IDENTIFIER = in.minewave.webrtc.Janus;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_OBJC_BRIDGING_HEADER = "Janus/janus-gateway-ios-Bridging-Header.h";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 5.0;
 			};
 			name = Debug;
 		};
@@ -416,6 +435,7 @@
 			baseConfigurationReference = D10966B05AAC6A5B5314B7E0 /* Pods-janus-gateway-ios.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CLANG_ENABLE_MODULES = YES;
 				DEVELOPMENT_TEAM = JX5W6VQ3A8;
 				ENABLE_BITCODE = NO;
 				FRAMEWORK_SEARCH_PATHS = (
@@ -427,6 +447,8 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = in.minewave.webrtc.Janus;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_OBJC_BRIDGING_HEADER = "Janus/janus-gateway-ios-Bridging-Header.h";
+				SWIFT_VERSION = 5.0;
 			};
 			name = Release;
 		};
