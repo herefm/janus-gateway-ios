@@ -14,7 +14,7 @@ static NSString const *kJanusData = @"data";
 
 @end
 
-@implementation WebSocketChannel {
+@implementation WebSocketChannelOld {
     NSURL *_url;
     SRWebSocket *_socket;
     NSNumber *sessionId;

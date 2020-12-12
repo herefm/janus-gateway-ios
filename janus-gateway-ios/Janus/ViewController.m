@@ -1,6 +1,7 @@
 
 #import "ViewController.h"
-#import "WebSocketChannel.h"
+//#import "WebSocketChannel.h"
+#import "janus_gateway_ios-Swift.h"
 #import "WebRTC/WebRTC.h"
 #import "RTCSessionDescription+JSON.h"
 #import "JanusConnection.h"

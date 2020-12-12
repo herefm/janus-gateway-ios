@@ -16,7 +16,7 @@ typedef NS_ENUM(NSInteger, ARDSignalingChannelState) {
     kARDSignalingChannelStateError
 };
 
-@interface WebSocketChannel : NSObject
+@interface WebSocketChannelOld : NSObject
 
 @property(nonatomic, weak) id<WebSocketDelegate> delegate;
 
