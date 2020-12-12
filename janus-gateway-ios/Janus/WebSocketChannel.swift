@@ -33,7 +33,7 @@ enum ARDSignalingChannelState {
     case kARDSignalingChannelStateError
 };
 
-protocol WebSocketDelegate {
+@objc protocol WebSocketDelegate {
     func onPublisherJoined(_ handleId: Int)
     func onPublisherRemoteJsep(_ handleId: Int, jsep: Dictionary<String, Any>)
     func subscriberHandleRemoteJsep(_ handleId: Int, jsep: Dictionary<String, Any>)
@@ -41,7 +41,7 @@ protocol WebSocketDelegate {
 }
 
 
-@objc class WebSocketChannel: NSObject {
+@objcMembers class WebSocketChannel: NSObject {
     public var delegate: WebSocketDelegate?
 
     public var roomName: String = "ZInARgyrVYXjj2NukBNu"
@@ -71,7 +71,7 @@ protocol WebSocketDelegate {
     //
 
     private var url: URL
-    private var session: URLSession
+    private var session: URLSession!
     private var socket: URLSessionWebSocketTask!
     var sessionId: Int!
     var keepAliveTimer: Timer!
@@ -98,19 +98,21 @@ protocol WebSocketDelegate {
      }
      */
 
-    init(url: URL) {
-        self.url = url
+    public init(url: String) {
+        self.url = URL(string: url)!
         self.transDict = Dictionary()
         self.handleDict = Dictionary()
         self.feedDict = Dictionary()
-        self.session = URLSession(configuration: .default)
         super.init()
 
-        socket = session.webSocketTask(with: url)
+        self.session = URLSession(configuration: .default, delegate: self, delegateQueue: nil)
+
+        socket = session.webSocketTask(with: self.url, protocols: ["janus-protocol"])
         self.listen()
         socket.resume();
 
         self.keepAliveTimer = Timer.scheduledTimer(withTimeInterval: 30.0, repeats: true, block: { (timer) in
+            print("Sending keepalive")
             let keepAlive: [String: Encodable] = [
                 "janus": "keepalive",
                 "session_id": self.sessionId,
@@ -125,7 +127,7 @@ protocol WebSocketDelegate {
         guard let self = self else { return }
         switch result {
         case .failure(let error):
-          print(error)
+          print("Socket connection error \(error)")
             // -- TODO: error callback
             /*
           let alert = Alert(
@@ -876,7 +878,7 @@ extension WebSocketChannel: URLSessionWebSocketDelegate {
         var randomString = String()
         randomString.reserveCapacity(len)
 
-        for _ in [0..<len] {
+        for _ in 0..<len {
             let idx = arc4random_uniform(UInt32(letters.count))
             let char: Character = letters[letters.index(letters.startIndex, offsetBy: Int(idx))]
             randomString.append(char)

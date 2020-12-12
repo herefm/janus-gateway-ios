@@ -4,13 +4,14 @@
 #import "janus_gateway_ios-Swift.h"
 #import "WebRTC/WebRTC.h"
 #import "RTCSessionDescription+JSON.h"
-#import "JanusConnection.h"
+// #import "JanusConnection.h"
 
 static NSString * const kARDMediaStreamId = @"ARDAMS";
 static NSString * const kARDAudioTrackId = @"ARDAMSa0";
 static NSString * const kARDVideoTrackId = @"ARDAMSv0";
 
-@interface ViewController ()
+
+@interface ViewController () <WebSocketDelegate>
 @property (strong, nonatomic) RTCCameraPreviewView *localView;
 
 @end
@@ -33,8 +34,7 @@ int height = 0;
     _localView = [[RTCCameraPreviewView alloc] initWithFrame:CGRectMake(0, 0, 480, 360)];
     [self.view addSubview:_localView];
 
-    NSURL *url = [[NSURL alloc] initWithString:@"ws://v2.here.fm"];
-    websocket = [[WebSocketChannel alloc] initWithURL: url];
+    websocket = [[WebSocketChannel alloc] initWithUrl:@"wss://v2.here.fm:443/janus"];
     websocket.delegate = self;
 
     peerConnectionDict = [NSMutableDictionary dictionary];
@@ -258,24 +258,27 @@ int height = 0;
 
 // mark: delegate
 
-- (void)onPublisherJoined: (NSNumber*) handleId {
-    [self offerPeerConnection:handleId];
+- (void)onPublisherJoined: (NSInteger) handleId {
+    [self offerPeerConnection:[[NSNumber alloc] initWithLong:handleId]];
 }
 
-- (void)onPublisherRemoteJsep:(NSNumber *)handleId dict:(NSDictionary *)jsep {
-    JanusConnection *jc = peerConnectionDict[handleId];
+- (void)onPublisherRemoteJsep:(NSInteger)handleId dict:(NSDictionary *)jsep {
+    NSNumber *handleIdNum = [[NSNumber alloc] initWithLong:handleId];
+    JanusConnection *jc = peerConnectionDict[handleIdNum];
     RTCSessionDescription *answerDescription = [RTCSessionDescription descriptionFromJSONDictionary:jsep];
     [jc.connection setRemoteDescription:answerDescription completionHandler:^(NSError * _Nullable error) {
     }];
 }
 
-- (void)subscriberHandleRemoteJsep: (NSNumber *)handleId dict:(NSDictionary *)jsep {
+- (void)subscriberHandleRemoteJsep: (NSInteger)handleId dict:(NSDictionary *)jsep {
+    NSNumber *handleIdNum = [[NSNumber alloc] initWithLong:handleId];
+
     RTCPeerConnection *peerConnection = [self createPeerConnection];
 
     JanusConnection *jc = [[JanusConnection alloc] init];
     jc.connection = peerConnection;
-    jc.handleId = handleId;
-    peerConnectionDict[handleId] = jc;
+    jc.handleId = handleIdNum;
+    peerConnectionDict[handleIdNum] = jc;
 
     RTCSessionDescription *answerDescription = [RTCSessionDescription descriptionFromJSONDictionary:jsep];
     [peerConnection setRemoteDescription:answerDescription completionHandler:^(NSError * _Nullable error) {
@@ -294,8 +297,9 @@ int height = 0;
 
 }
 
-- (void)onLeaving:(NSNumber *)handleId {
-    JanusConnection *jc = peerConnectionDict[handleId];
+- (void)onLeaving:(NSInteger)handleId {
+    NSNumber *handleIdNum = [[NSNumber alloc] initWithLong:handleIdNum];
+    JanusConnection *jc = peerConnectionDict[handleIdNum];
     [jc.connection close];
     jc.connection = nil;
     RTCVideoTrack *videoTrack = jc.videoTrack;
@@ -304,7 +308,7 @@ int height = 0;
     [jc.videoView renderFrame:nil];
     [jc.videoView removeFromSuperview];
 
-    [peerConnectionDict removeObjectForKey:handleId];
+    [peerConnectionDict removeObjectForKey:handleIdNum];
 }
 
 @end

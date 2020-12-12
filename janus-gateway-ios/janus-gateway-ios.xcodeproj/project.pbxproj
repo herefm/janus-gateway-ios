@@ -8,11 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		1B68AE20884D179BD06D1F20 /* libPods-janus-gateway-ios.a in Frameworks */ = {isa = PBXBuildFile; fileRef = DBB9CB144A52379C61B832DF /* libPods-janus-gateway-ios.a */; };
-		27078DA41E1BC8D0002199B5 /* WebSocketChannel.m in Sources */ = {isa = PBXBuildFile; fileRef = 27078DA21E1BC8D0002199B5 /* WebSocketChannel.m */; };
 		27078DA81E1C0D0C002199B5 /* RTCSessionDescription+JSON.m in Sources */ = {isa = PBXBuildFile; fileRef = 27078DA71E1C0D0C002199B5 /* RTCSessionDescription+JSON.m */; };
-		27078DB91E1E10DB002199B5 /* JanusHandle.m in Sources */ = {isa = PBXBuildFile; fileRef = 27078DB81E1E10DB002199B5 /* JanusHandle.m */; };
-		27078DBF1E1E1932002199B5 /* JanusTransaction.m in Sources */ = {isa = PBXBuildFile; fileRef = 27078DBE1E1E1932002199B5 /* JanusTransaction.m */; };
-		27078DC21E1E3E3E002199B5 /* JanusConnection.m in Sources */ = {isa = PBXBuildFile; fileRef = 27078DC11E1E3E3E002199B5 /* JanusConnection.m */; };
 		2793874F1E9E93FA001060A2 /* WebRTC.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 279F89AA1E1BBFD300B651E7 /* WebRTC.framework */; };
 		279387501E9E93FA001060A2 /* WebRTC.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 279F89AA1E1BBFD300B651E7 /* WebRTC.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		279F89951E1BBECE00B651E7 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 279F89941E1BBECE00B651E7 /* main.m */; };
@@ -131,8 +127,6 @@
 				889C6FB42581581B00E06446 /* To Remove */,
 				27078DA61E1C0D0C002199B5 /* RTCSessionDescription+JSON.h */,
 				27078DA71E1C0D0C002199B5 /* RTCSessionDescription+JSON.m */,
-				27078DA21E1BC8D0002199B5 /* WebSocketChannel.m */,
-				27078DA31E1BC8D0002199B5 /* WebSocketChannel.h */,
 				279F89961E1BBECE00B651E7 /* AppDelegate.h */,
 				279F89971E1BBECE00B651E7 /* AppDelegate.m */,
 				279F89991E1BBECE00B651E7 /* ViewController.h */,
@@ -179,6 +173,8 @@
 		889C6FB42581581B00E06446 /* To Remove */ = {
 			isa = PBXGroup;
 			children = (
+				27078DA21E1BC8D0002199B5 /* WebSocketChannel.m */,
+				27078DA31E1BC8D0002199B5 /* WebSocketChannel.h */,
 				27078DC01E1E3E2C002199B5 /* JanusConnection.h */,
 				27078DC11E1E3E3E002199B5 /* JanusConnection.m */,
 				27078DB71E1E10C2002199B5 /* JanusHandle.h */,
@@ -293,11 +289,7 @@
 			files = (
 				88855B652571C48E00951C57 /* JanusHandle.swift in Sources */,
 				279F899B1E1BBECE00B651E7 /* ViewController.m in Sources */,
-				27078DBF1E1E1932002199B5 /* JanusTransaction.m in Sources */,
 				27078DA81E1C0D0C002199B5 /* RTCSessionDescription+JSON.m in Sources */,
-				27078DA41E1BC8D0002199B5 /* WebSocketChannel.m in Sources */,
-				27078DB91E1E10DB002199B5 /* JanusHandle.m in Sources */,
-				27078DC21E1E3E3E002199B5 /* JanusConnection.m in Sources */,
 				279F89981E1BBECE00B651E7 /* AppDelegate.m in Sources */,
 				889C6FAD257B413600E06446 /* JanusTransaction.swift in Sources */,
 				889C6FB62581588000E06446 /* WebSocketChannel.swift in Sources */,

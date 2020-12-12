@@ -11,6 +11,8 @@
 
 int main(int argc, char * argv[]) {
     @autoreleasepool {
+//        setenv("CFNETWORK_DIAGNOSTICS", "3", 1);
+
         return UIApplicationMain(argc, argv, nil, NSStringFromClass([AppDelegate class]));
     }
 }
