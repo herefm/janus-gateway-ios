@@ -97,7 +97,7 @@ int height = 0;
                        completionHandler:^(RTCSessionDescription *sdp,
                                            NSError *error) {
                            [publisherPeerConnection setLocalDescription:sdp completionHandler:^(NSError * _Nullable error) {
-                               [websocket publisherCreateOffer: handleId sdp:sdp];
+                               [websocket publisherCreateOffer:[handleId unsignedLongValue] sdp:sdp];
                            }];
                        }];
 }
@@ -233,9 +233,9 @@ int height = 0;
         }
     }
     if (candidate != nil) {
-        [websocket trickleCandidate:handleId candidate:candidate];
+        [websocket trickleCandidate:[handleId unsignedLongValue] candidate:candidate];
     } else {
-        [websocket trickleCandidateComplete: handleId];
+        [websocket trickleCandidateComplete: [handleId unsignedLongValue]];
     }
 }
 
@@ -259,11 +259,11 @@ int height = 0;
 // mark: delegate
 
 - (void)onPublisherJoined: (NSUInteger) handleId {
-    [self offerPeerConnection:[[NSNumber alloc] initWithLong:handleId]];
+    [self offerPeerConnection:[[NSNumber alloc] initWithUnsignedLong:handleId]];
 }
 
 - (void)onPublisherRemoteJsep:(NSUInteger)handleId jsep:(NSDictionary *)jsep {
-    NSNumber *handleIdNum = [[NSNumber alloc] initWithLong:handleId];
+    NSNumber *handleIdNum = [[NSNumber alloc] initWithUnsignedLong:handleId];
     JanusConnection *jc = peerConnectionDict[handleIdNum];
     RTCSessionDescription *answerDescription = [RTCSessionDescription descriptionFromJSONDictionary:jsep];
     [jc.connection setRemoteDescription:answerDescription completionHandler:^(NSError * _Nullable error) {
@@ -271,7 +271,7 @@ int height = 0;
 }
 
 - (void)subscriberHandleRemoteJsep:(NSUInteger)handleId jsep:(NSDictionary *)jsep {
-    NSNumber *handleIdNum = [[NSNumber alloc] initWithLong:handleId];
+    NSNumber *handleIdNum = [[NSNumber alloc] initWithUnsignedLong:handleId];
 
     RTCPeerConnection *peerConnection = [self createPeerConnection];
 
@@ -298,7 +298,7 @@ int height = 0;
 }
 
 - (void)onLeaving:(NSUInteger)handleId {
-    NSNumber *handleIdNum = [[NSNumber alloc] initWithLong:handleIdNum];
+    NSNumber *handleIdNum = [[NSNumber alloc] initWithUnsignedLong:handleIdNum];
     JanusConnection *jc = peerConnectionDict[handleIdNum];
     [jc.connection close];
     jc.connection = nil;

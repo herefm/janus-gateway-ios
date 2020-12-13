@@ -536,10 +536,10 @@ extension WebSocketChannel: URLSessionWebSocketDelegate {
     func publisherCreateOffer(_ handleId: UInt64, sdp: RTCSessionDescription) {
         let transaction = randomStringWithLength(12)
 
-        let publish: Encodable = [
+        let publish: [String: Any] = [
             "request": "configure",
-            "audio": "true",
-            "video": "true",
+            "audio": true,
+            "video": true,
         ]
 
         let type = RTCSessionDescription.string(for: sdp.type)
@@ -547,7 +547,7 @@ extension WebSocketChannel: URLSessionWebSocketDelegate {
             "type": type,
             "sdp": sdp.sdp,
         ]
-        let offerMessage: [String: Encodable] = [
+        let offerMessage: [String: Any] = [
             "janus": "message",
             "body": publish,
             "jsep": jsep,
@@ -691,7 +691,7 @@ extension WebSocketChannel: URLSessionWebSocketDelegate {
     func trickleCandidateComplete(_ handleId: UInt64) {
         let trickleMessage: [String: Encodable] = [
             "janus": "trickle",
-            "candidate": ["completed": "true"],
+            "candidate": ["completed": true],
             "transaction": self.randomStringWithLength(12),
             "session_id": sessionId,
             "handle_id": handleId,
