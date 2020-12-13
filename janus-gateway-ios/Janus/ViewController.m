@@ -258,11 +258,11 @@ int height = 0;
 
 // mark: delegate
 
-- (void)onPublisherJoined: (NSInteger) handleId {
+- (void)onPublisherJoined: (NSUInteger) handleId {
     [self offerPeerConnection:[[NSNumber alloc] initWithLong:handleId]];
 }
 
-- (void)onPublisherRemoteJsep:(NSInteger)handleId dict:(NSDictionary *)jsep {
+- (void)onPublisherRemoteJsep:(NSUInteger)handleId jsep:(NSDictionary *)jsep {
     NSNumber *handleIdNum = [[NSNumber alloc] initWithLong:handleId];
     JanusConnection *jc = peerConnectionDict[handleIdNum];
     RTCSessionDescription *answerDescription = [RTCSessionDescription descriptionFromJSONDictionary:jsep];
@@ -270,7 +270,7 @@ int height = 0;
     }];
 }
 
-- (void)subscriberHandleRemoteJsep: (NSInteger)handleId dict:(NSDictionary *)jsep {
+- (void)subscriberHandleRemoteJsep:(NSUInteger)handleId jsep:(NSDictionary *)jsep {
     NSNumber *handleIdNum = [[NSNumber alloc] initWithLong:handleId];
 
     RTCPeerConnection *peerConnection = [self createPeerConnection];
@@ -297,7 +297,7 @@ int height = 0;
 
 }
 
-- (void)onLeaving:(NSInteger)handleId {
+- (void)onLeaving:(NSUInteger)handleId {
     NSNumber *handleIdNum = [[NSNumber alloc] initWithLong:handleIdNum];
     JanusConnection *jc = peerConnectionDict[handleIdNum];
     [jc.connection close];

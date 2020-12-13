@@ -34,10 +34,10 @@ enum ARDSignalingChannelState {
 };
 
 @objc protocol WebSocketDelegate {
-    func onPublisherJoined(_ handleId: Int)
-    func onPublisherRemoteJsep(_ handleId: Int, jsep: Dictionary<String, Any>)
-    func subscriberHandleRemoteJsep(_ handleId: Int, jsep: Dictionary<String, Any>)
-    func onLeaving(_ handleId: Int)
+    func onPublisherJoined(_ handleId: UInt64)
+    func onPublisherRemoteJsep(_ handleId: UInt64, jsep: Dictionary<String, Any>)
+    func subscriberHandleRemoteJsep(_ handleId: UInt64, jsep: Dictionary<String, Any>)
+    func onLeaving(_ handleId: UInt64)
 }
 
 
@@ -50,9 +50,6 @@ enum ARDSignalingChannelState {
 
     static let kJanus = "janus"
     static let kJanusData = "data"
-
-    private let decoder = JSONDecoder()
-    private let encoder = JSONEncoder()
 
     /*
     @implementation WebSocketChannel {
@@ -73,11 +70,11 @@ enum ARDSignalingChannelState {
     private var url: URL
     private var session: URLSession!
     private var socket: URLSessionWebSocketTask!
-    var sessionId: Int!
+    var sessionId: UInt64!
     var keepAliveTimer: Timer!
     var transDict: Dictionary<String, JanusTransaction>
-    var handleDict: Dictionary<Int, JanusHandle>
-    var feedDict: Dictionary<Int, JanusHandle>
+    var handleDict: Dictionary<UInt64, JanusHandle>
+    var feedDict: Dictionary<String, JanusHandle>
 
     /*
      - (instancetype)initWithURL:(NSURL *)url {
@@ -255,7 +252,7 @@ extension WebSocketChannel: URLSessionWebSocketDelegate {
         jt.tid = transaction
         jt.success = { (result) in
             let data = result["data"] as! Dictionary<String, Any>
-            self.sessionId = data["id"] as! Int
+            self.sessionId = (data["id"] as! UInt64)
             self.keepAliveTimer.fire()
             self.publisherCreateHandle()
         }
@@ -309,7 +306,7 @@ extension WebSocketChannel: URLSessionWebSocketDelegate {
         jt.tid = transaction
         jt.success = { (result) in
             let data = result["data"] as! Dictionary<String, Any>
-            let handle = JanusHandle(data["id"] as! Int)
+            let handle = JanusHandle(data["id"] as! UInt64)
             handle.onJoined = { (handle: JanusHandle) in
                 self.delegate?.onPublisherJoined(handle.handleId)
             }
@@ -467,7 +464,7 @@ extension WebSocketChannel: URLSessionWebSocketDelegate {
         } else if (janus == "ack") {
             print("Just an ack");
         } else {
-            guard let sender = message["sender"] as? Int,
+            guard let sender = message["sender"] as? UInt64,
                   let handle = handleDict[sender] else {
                 print("Missing handle?")
                 return
@@ -484,7 +481,7 @@ extension WebSocketChannel: URLSessionWebSocketDelegate {
 
                 if let publishers = plugin["publishers"] as? [[String: Any]] {
                     for publisher in publishers {
-                        if let feed = publisher["id"] as? Int,
+                        if let feed = publisher["id"] as? String,
                            let display = publisher["display"] as? String {
                             subscriberCreateHandle(feed, display: display)
                         } else {
@@ -493,7 +490,7 @@ extension WebSocketChannel: URLSessionWebSocketDelegate {
                     }
                 }
 
-                if let leavingId = plugin["leaving"] as? Int,
+                if let leavingId = plugin["leaving"] as? String,
                    let jHandle = feedDict[leavingId] {
                     jHandle.onLeaving?(jHandle)
                 }
@@ -536,7 +533,7 @@ extension WebSocketChannel: URLSessionWebSocketDelegate {
          [_socket send:[self jsonMessage:offerMessage]];
      }
      */
-    func publisherCreateOffer(_ handleId: Int, sdp: RTCSessionDescription) {
+    func publisherCreateOffer(_ handleId: UInt64, sdp: RTCSessionDescription) {
         let transaction = randomStringWithLength(12)
 
         let publish: Encodable = [
@@ -600,12 +597,12 @@ extension WebSocketChannel: URLSessionWebSocketDelegate {
      */
 
 
-    func subscriberCreateHandle(_ feed: Int, display: String) {
+    func subscriberCreateHandle(_ feed: String, display: String) {
         let transaction = randomStringWithLength(12)
         let jt = JanusTransaction();
         jt.tid = transaction;
         jt.success = { data in
-            guard let handleId = (data["data"] as? [String: Any])?["id"] as? Int else {
+            guard let handleId = (data["data"] as? [String: Any])?["id"] as? UInt64 else {
                 print("No handle ID found")
                 return
             }
@@ -656,18 +653,18 @@ extension WebSocketChannel: URLSessionWebSocketDelegate {
         [_socket send:[self jsonMessage:trickleMessage]];
     }
  */
-    func trickleCandidate(_ handleId: Int, candidate: RTCIceCandidate) {
-        let candidateDict: [String: Encodable] = [
+    func trickleCandidate(_ handleId: UInt64, candidate: RTCIceCandidate) {
+        let candidateDict: [String: Any] = [
             "candidate": candidate.sdp,
-            "sdpMid": candidate.sdpMid,
+            "sdpMid": candidate.sdpMid!,
             "sdpMLineIndex": candidate.sdpMLineIndex,
         ]
 
-        let trickleMessage: [String: Encodable] = [
+        let trickleMessage: [String: Any] = [
             "janus": "trickle",
-            "candidate": candidateDict as! Encodable, // TODO not sure if this will work...
+            "candidate": candidateDict,
             "transaction": self.randomStringWithLength(12),
-            "session_id": sessionId,
+            "session_id": self.sessionId!,
             "handle_id": handleId,
         ]
 
@@ -691,7 +688,7 @@ extension WebSocketChannel: URLSessionWebSocketDelegate {
     }*/
 
 
-    func trickleCandidateComplete(_ handleId: Int) {
+    func trickleCandidateComplete(_ handleId: UInt64) {
         let trickleMessage: [String: Encodable] = [
             "janus": "trickle",
             "candidate": ["completed": "true"],
@@ -737,16 +734,16 @@ extension WebSocketChannel: URLSessionWebSocketDelegate {
         let body: [String: Encodable] = [
             "request": "join",
             "room": self.roomName,
-            "ptype": "listener",
+            "ptype": "subscriber",
             "feed": handle.feedId,
         ]
 
-        let message: [String: Encodable] = [
+        let message: [String: Any] = [
             "janus": "message",
             "transaction": transaction,
-            "session_id": sessionId,
+            "session_id": sessionId!,
             "handle_id": handle.handleId,
-            "body": body as! Encodable,
+            "body": body
         ]
 
         self.sendMessage(message)
@@ -781,7 +778,7 @@ extension WebSocketChannel: URLSessionWebSocketDelegate {
      }
      */
 
-    func subscriberCreateAnswer(_ handleId: Int, sdp: RTCSessionDescription) {
+    func subscriberCreateAnswer(_ handleId: UInt64, sdp: RTCSessionDescription) {
         let transaction = self.randomStringWithLength(12)
 
         let body = [
@@ -886,9 +883,15 @@ extension WebSocketChannel: URLSessionWebSocketDelegate {
         return randomString
     }
 
-    private func sendMessage(_ message: [String: Encodable]) {
+    private func sendMessage(_ message: [String: Any]) {
+        if (message["transaction"] == nil) {
+            print("ERROR: Missing required param Transaction in message")
+            return;
+        }
+
         do {
-            let data = try encoder.encode(message)
+            let data = try JSONSerialization.data(withJSONObject: message, options: [])
+            print("Sending: \(String(describing: String(data: data, encoding: .utf8)!))")
             self.socket.send(.data(data)) { (err) in
                 if err != nil {
                     print(err.debugDescription)
@@ -929,7 +932,7 @@ extension WebSocketChannel {
     }
 }
 
-private extension Encodable {
+/*private extension Encodable {
     func encode(to container: inout SingleValueEncodingContainer) throws {
         try container.encode(self)
     }
@@ -949,4 +952,4 @@ extension JSONEncoder {
         let wrappedDict = dictionary.mapValues(EncodableWrapper.init(wrapped:))
         return try self.encode(wrappedDict)
     }
-}
+}*/

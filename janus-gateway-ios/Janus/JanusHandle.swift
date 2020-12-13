@@ -29,11 +29,11 @@ public typealias OnRemoteJsep = (JanusHandle, Dictionary<String, Any>) -> Void
     public var onJoined: OnHandleStateChange?
     public var onLeaving: OnHandleStateChange?
     public var onRemoteJsep: OnRemoteJsep?
-    public var handleId: Int
-    public var feedId: Int?
+    public var handleId: UInt64
+    public var feedId: String?
     public var display: String?
 
-    init(_ handleId: Int) {
+    init(_ handleId: UInt64) {
         self.handleId = handleId;
     }
 }
