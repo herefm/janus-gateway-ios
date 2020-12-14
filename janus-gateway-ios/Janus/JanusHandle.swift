@@ -3,7 +3,7 @@
 //  janus-gateway-ios
 //
 //  Created by Jesse Boyes on 11/27/20.
-//  Copyright © 2020 MineWave. All rights reserved.
+//  Copyright © 2020 H3R3. All rights reserved.
 //
 
 import Foundation

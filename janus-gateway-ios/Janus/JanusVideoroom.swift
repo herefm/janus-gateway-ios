@@ -3,18 +3,10 @@
 //  janus-gateway-ios
 //
 //  Created by Jesse Boyes on 12/9/20.
-//  Copyright © 2020 MineWave. All rights reserved.
+//  Copyright © 2020 H3R3. All rights reserved.
 //
 
 import Foundation
-
-
-// #import "WebRTC/RTCLogging.h"
-// #import "SRWebSocket.h"
-// #import "janus_gateway_ios-Swift.h"
-
-// static NSString const *kJanus = @"janus";
-// static NSString const *kJanusData = @"data";
 
 /*
 @interface WebSocketChannel () <SRWebSocketDelegate>
@@ -33,7 +25,7 @@ enum ARDSignalingChannelState {
     case kARDSignalingChannelStateError
 };
 
-@objc protocol WebSocketDelegate {
+@objc protocol VideoroomDelegate {
     func onPublisherJoined(_ handleId: UInt64)
     func onPublisherRemoteJsep(_ handleId: UInt64, jsep: Dictionary<String, Any>)
     func subscriberHandleRemoteJsep(_ handleId: UInt64, jsep: Dictionary<String, Any>)
@@ -41,15 +33,10 @@ enum ARDSignalingChannelState {
 }
 
 
-@objcMembers class WebSocketChannel: NSObject {
-    public var delegate: WebSocketDelegate?
-
-    public var roomName: String = "ZInARgyrVYXjj2NukBNu"
-    public var userDisplayName: String = "j9s1h5MVf2OJ5eHIK2zU43uJufk2"
-
+@objcMembers class JanusVideoroom: NSObject {
+    public var delegate: VideoroomDelegate?
 
     static let kJanus = "janus"
-    static let kJanusData = "data"
 
     /*
     @implementation WebSocketChannel {
@@ -65,16 +52,18 @@ enum ARDSignalingChannelState {
     @synthesize state = _state;
 */
     var state: ARDSignalingChannelState = .kARDSignalingChannelStateClosed
-    //
 
     private var url: URL
     private var session: URLSession!
     private var socket: URLSessionWebSocketTask!
-    var sessionId: UInt64!
-    var keepAliveTimer: Timer!
-    var transDict: Dictionary<String, JanusTransaction>
-    var handleDict: Dictionary<UInt64, JanusHandle>
-    var feedDict: Dictionary<String, JanusHandle>
+    private var sessionId: UInt64!
+    private var keepAliveTimer: Timer!
+    private var transDict: Dictionary<String, JanusTransaction>
+    private var handleDict: Dictionary<UInt64, JanusHandle>
+    private var feedDict: Dictionary<String, JanusHandle>
+    private let roomName: String
+    private let userDisplayName: String
+
 
     /*
      - (instancetype)initWithURL:(NSURL *)url {
@@ -95,8 +84,10 @@ enum ARDSignalingChannelState {
      }
      */
 
-    public init(url: String) {
+    public init(url: String, roomName: String, userName: String) {
         self.url = URL(string: url)!
+        self.roomName = roomName
+        self.userDisplayName = userName
         self.transDict = Dictionary()
         self.handleDict = Dictionary()
         self.feedDict = Dictionary()
@@ -140,7 +131,6 @@ enum ARDSignalingChannelState {
           self.state = .kARDSignalingChannelStateError;
           return
         case .success(let message):
-          // 4
           switch message {
           case .data(let data):
             do {
@@ -159,7 +149,6 @@ enum ARDSignalingChannelState {
             break
           }
         }
-        // 5
         self.listen()
       }
     }
@@ -170,9 +159,13 @@ enum ARDSignalingChannelState {
      }
 */
     deinit {
+        disconnect()
+    }
+
+    public func disconnect() {
         if (state == .kARDSignalingChannelStateClosed ||
                 state == .kARDSignalingChannelStateError) {
-          return
+            return
         }
         socket.cancel(with: .goingAway, reason: nil)
         RTCLog("C->WSS DELETE close")
@@ -188,62 +181,8 @@ enum ARDSignalingChannelState {
         RTCLog(@"C->WSS DELETE close");
     }*/
 
-}
 
-/*
- - (void)webSocketDidOpen:(SRWebSocket *)webSocket {
-   RTCLog(@"WebSocket connection opened.");
-   self.state = kARDSignalingChannelStateOpen;
-   [self createSession];
- }
- */
-extension WebSocketChannel: URLSessionWebSocketDelegate {
-    func urlSession(_ session: URLSession, webSocketTask: URLSessionWebSocketTask, didOpenWithProtocol protocol: String?) {
-        RTCLog("WebSocket connection opened.")
-        state = .kARDSignalingChannelStateOpen;
-        self.createSession()
-    }
-
-    func urlSession(_ session: URLSession, webSocketTask: URLSessionWebSocketTask, didCloseWith closeCode: URLSessionWebSocketTask.CloseCode, reason: Data?) {
-        /*- (void)webSocket:(SRWebSocket *)webSocket
-         didCloseWithCode:(NSInteger)code
-                   reason:(NSString *)reason
-                 wasClean:(BOOL)wasClean {
-            RTCLog(@"WebSocket closed with code: %ld reason:%@ wasClean:%d",
-                   (long)code, reason, wasClean);
-            NSParameterAssert(_state != kARDSignalingChannelStateError);
-            self.state = kARDSignalingChannelStateClosed;
-            [keepAliveTimer invalidate];
-        }
-*/
-
-        self.RTCLogInfo("WebSocket closed with code: \(closeCode)");
-        self.state = .kARDSignalingChannelStateClosed
-        keepAliveTimer.invalidate();
-    }
-    
-    /*
-     - (void)createSession {
-         NSString *transaction = [self randomStringWithLength:12];
-
-         JanusTransaction *jt = [[JanusTransaction alloc] init];
-         jt.tid = transaction;
-         jt.success = ^(NSDictionary *data) {
-             sessionId = data[@"data"][@"id"];
-             [keepAliveTimer fire];
-             [self publisherCreateHandle];
-         };
-         jt.error = ^(NSDictionary *data) {
-         };
-         transDict[transaction] = jt;
-
-         NSDictionary *createMessage = @{
-             @"janus": @"create",
-             @"transaction" : transaction,
-                                         };
-       [_socket send:[self jsonMessage:createMessage]];
-     }
-     */
+    // MARK: -
 
     private func createSession() {
         let transaction = randomStringWithLength(12);
@@ -444,7 +383,7 @@ extension WebSocketChannel: URLSessionWebSocketDelegate {
             return
         }
         print("====onMessage=%@", message);
-        guard let janus: String = message[WebSocketChannel.kJanus] as? String else {
+        guard let janus: String = message[JanusVideoroom.kJanus] as? String else {
             print("No Janus response key in message")
             return
         }
@@ -728,8 +667,6 @@ extension WebSocketChannel: URLSessionWebSocketDelegate {
 
     func subscriberJoinRoom(_ handle: JanusHandle) {
         let transaction = self.randomStringWithLength(12)
-        // TODO originial code had this weird thing in it ... ???
-        // transDict[transaction] = "subscriber"
 
         let body: [String: Encodable] = [
             "request": "join",
@@ -870,6 +807,58 @@ extension WebSocketChannel: URLSessionWebSocketDelegate {
  }
 */
 
+}
+
+// MARK: URLSessionWebSocketDelegate
+extension JanusVideoroom: URLSessionWebSocketDelegate {
+    func urlSession(_ session: URLSession, webSocketTask: URLSessionWebSocketTask, didOpenWithProtocol protocol: String?) {
+        RTCLog("WebSocket connection opened.")
+        state = .kARDSignalingChannelStateOpen;
+        self.createSession()
+    }
+
+    func urlSession(_ session: URLSession, webSocketTask: URLSessionWebSocketTask, didCloseWith closeCode: URLSessionWebSocketTask.CloseCode, reason: Data?) {
+        /*- (void)webSocket:(SRWebSocket *)webSocket
+         didCloseWithCode:(NSInteger)code
+                   reason:(NSString *)reason
+                 wasClean:(BOOL)wasClean {
+            RTCLog(@"WebSocket closed with code: %ld reason:%@ wasClean:%d",
+                   (long)code, reason, wasClean);
+            NSParameterAssert(_state != kARDSignalingChannelStateError);
+            self.state = kARDSignalingChannelStateClosed;
+            [keepAliveTimer invalidate];
+        }
+*/
+
+        self.RTCLogInfo("WebSocket closed with code: \(closeCode)");
+        self.state = .kARDSignalingChannelStateClosed
+        keepAliveTimer.invalidate();
+    }
+    
+    /*
+     - (void)createSession {
+         NSString *transaction = [self randomStringWithLength:12];
+
+         JanusTransaction *jt = [[JanusTransaction alloc] init];
+         jt.tid = transaction;
+         jt.success = ^(NSDictionary *data) {
+             sessionId = data[@"data"][@"id"];
+             [keepAliveTimer fire];
+             [self publisherCreateHandle];
+         };
+         jt.error = ^(NSDictionary *data) {
+         };
+         transDict[transaction] = jt;
+
+         NSDictionary *createMessage = @{
+             @"janus": @"create",
+             @"transaction" : transaction,
+                                         };
+       [_socket send:[self jsonMessage:createMessage]];
+     }
+     */
+
+
     private func randomStringWithLength(_ len: Int) -> String {
         let letters: String = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
         var randomString = String()
@@ -905,7 +894,7 @@ extension WebSocketChannel: URLSessionWebSocketDelegate {
 }
 
 // MARK: RTC Logging convenience
-extension WebSocketChannel {
+extension JanusVideoroom {
 
     func RTCLogFormat(_ severity: RTCLoggingSeverity, _ format: String, _ args: String...) {
         RTCLogEx(severity, String.init(format: format, arguments: args))
@@ -931,25 +920,3 @@ extension WebSocketChannel {
         RTCLogFormat(.info, String.init(format: format, arguments: args))
     }
 }
-
-/*private extension Encodable {
-    func encode(to container: inout SingleValueEncodingContainer) throws {
-        try container.encode(self)
-    }
-}
-
-extension JSONEncoder {
-    private struct EncodableWrapper: Encodable {
-        let wrapped: Encodable
-
-        func encode(to encoder: Encoder) throws {
-            var container = encoder.singleValueContainer()
-            try self.wrapped.encode(to: &container)
-        }
-    }
-
-    func encode<Key: Encodable>(_ dictionary: [Key: Encodable]) throws -> Data {
-        let wrappedDict = dictionary.mapValues(EncodableWrapper.init(wrapped:))
-        return try self.encode(wrappedDict)
-    }
-}*/

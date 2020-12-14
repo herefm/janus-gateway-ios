@@ -3,7 +3,7 @@
 //  janus-gateway-ios
 //
 //  Created by Jesse Boyes on 12/13/20.
-//  Copyright © 2020 MineWave. All rights reserved.
+//  Copyright © 2020 H3R3. All rights reserved.
 //
 
 import UIKit
@@ -15,10 +15,10 @@ class MainViewController: UIViewController {
 
     var localView: RTCCameraPreviewView!
 
-    var websocket: WebSocketChannel!
+    var websocket: JanusVideoroom!
     var peerConnectionDict: [UInt64: JanusConnection] = [:]
     var publisherPeerConnection: RTCPeerConnection!
-    var localTrack: RTCVideoTrack? // TODO: Rename localVideoTrack
+    var localVideoTrack: RTCVideoTrack? // TODO: Rename localVideoTrack
     var localAudioTrack: RTCAudioTrack?
 
     var height: Int = 0
@@ -32,11 +32,13 @@ class MainViewController: UIViewController {
         localView = RTCCameraPreviewView(frame: CGRect(x: 0, y: 0, width: 480, height: 360))
         self.view.addSubview(localView)
 
-        self.websocket = WebSocketChannel(url: "wss://v2.here.fm:443/janus")
+        self.websocket = JanusVideoroom(url: "wss://v2.here.fm:443/janus",
+                                          roomName: "ZInARgyrVYXjj2NukBNu",
+                                          userName: "j9s1h5MVf2OJ5eHIK2zU43uJufk2")
         websocket.delegate = self
 
         factory = RTCPeerConnectionFactory()
-        localTrack = createLocalVideoTrack()
+        localVideoTrack = createLocalVideoTrack()
         localAudioTrack = createLocalAudioTrack()
     }
 
@@ -147,7 +149,7 @@ class MainViewController: UIViewController {
 
 }
 
-extension MainViewController: WebSocketDelegate {
+extension MainViewController: VideoroomDelegate {
 /*
      - (void)onPublisherJoined: (NSUInteger) handleId {
          [self offerPeerConnection:[[NSNumber alloc] initWithUnsignedLong:handleId]];
@@ -382,8 +384,8 @@ extension MainViewController: WebSocketDelegate {
     private func createVideoSender(_ peerConnection: RTCPeerConnection) -> RTCRtpSender {
         let sender = peerConnection.sender(withKind: kRTCMediaStreamTrackKindVideo,
                                            streamId: MainViewController.kARDMediaStreamId)
-        if (localTrack != nil) {
-            sender.track = localTrack
+        if (localVideoTrack != nil) {
+            sender.track = localVideoTrack
         }
 
         return sender

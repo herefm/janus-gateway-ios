@@ -8,7 +8,6 @@
 
 /* Begin PBXBuildFile section */
 		1B68AE20884D179BD06D1F20 /* libPods-janus-gateway-ios.a in Frameworks */ = {isa = PBXBuildFile; fileRef = DBB9CB144A52379C61B832DF /* libPods-janus-gateway-ios.a */; };
-		27078DA81E1C0D0C002199B5 /* RTCSessionDescription+JSON.m in Sources */ = {isa = PBXBuildFile; fileRef = 27078DA71E1C0D0C002199B5 /* RTCSessionDescription+JSON.m */; };
 		2793874F1E9E93FA001060A2 /* WebRTC.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 279F89AA1E1BBFD300B651E7 /* WebRTC.framework */; };
 		279387501E9E93FA001060A2 /* WebRTC.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 279F89AA1E1BBFD300B651E7 /* WebRTC.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		279F89951E1BBECE00B651E7 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 279F89941E1BBECE00B651E7 /* main.m */; };
@@ -19,7 +18,7 @@
 		88855B652571C48E00951C57 /* JanusHandle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 88855B642571C48E00951C57 /* JanusHandle.swift */; };
 		889C6FAD257B413600E06446 /* JanusTransaction.swift in Sources */ = {isa = PBXBuildFile; fileRef = 889C6FAC257B413600E06446 /* JanusTransaction.swift */; };
 		889C6FAF257B480700E06446 /* JanusConnection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 889C6FAE257B480700E06446 /* JanusConnection.swift */; };
-		889C6FB62581588000E06446 /* WebSocketChannel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 889C6FB52581588000E06446 /* WebSocketChannel.swift */; };
+		889C6FB62581588000E06446 /* JanusVideoroom.swift in Sources */ = {isa = PBXBuildFile; fileRef = 889C6FB52581588000E06446 /* JanusVideoroom.swift */; };
 		88BE394925869A030002C608 /* MainViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 88BE394825869A030002C608 /* MainViewController.swift */; };
 		88BE394B2587B8D60002C608 /* RTCSessionDescription+JSON.swift in Sources */ = {isa = PBXBuildFile; fileRef = 88BE394A2587B8D60002C608 /* RTCSessionDescription+JSON.swift */; };
 /* End PBXBuildFile section */
@@ -74,7 +73,7 @@
 		88855B642571C48E00951C57 /* JanusHandle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JanusHandle.swift; sourceTree = "<group>"; };
 		889C6FAC257B413600E06446 /* JanusTransaction.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JanusTransaction.swift; sourceTree = "<group>"; };
 		889C6FAE257B480700E06446 /* JanusConnection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JanusConnection.swift; sourceTree = "<group>"; };
-		889C6FB52581588000E06446 /* WebSocketChannel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebSocketChannel.swift; sourceTree = "<group>"; };
+		889C6FB52581588000E06446 /* JanusVideoroom.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JanusVideoroom.swift; sourceTree = "<group>"; };
 		88BE394825869A030002C608 /* MainViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainViewController.swift; sourceTree = "<group>"; };
 		88BE394A2587B8D60002C608 /* RTCSessionDescription+JSON.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "RTCSessionDescription+JSON.swift"; sourceTree = "<group>"; };
 		B0EDAAEFD9A7DD4C14599CFA /* libPods-Janus.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-Janus.a"; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -128,8 +127,6 @@
 			isa = PBXGroup;
 			children = (
 				889C6FB42581581B00E06446 /* To Remove */,
-				27078DA61E1C0D0C002199B5 /* RTCSessionDescription+JSON.h */,
-				27078DA71E1C0D0C002199B5 /* RTCSessionDescription+JSON.m */,
 				279F89961E1BBECE00B651E7 /* AppDelegate.h */,
 				279F89971E1BBECE00B651E7 /* AppDelegate.m */,
 				88855B642571C48E00951C57 /* JanusHandle.swift */,
@@ -142,7 +139,7 @@
 				279F89AA1E1BBFD300B651E7 /* WebRTC.framework */,
 				279F89931E1BBECE00B651E7 /* Supporting Files */,
 				88855B632571C48D00951C57 /* janus-gateway-ios-Bridging-Header.h */,
-				889C6FB52581588000E06446 /* WebSocketChannel.swift */,
+				889C6FB52581588000E06446 /* JanusVideoroom.swift */,
 				88BE394825869A030002C608 /* MainViewController.swift */,
 				88BE394A2587B8D60002C608 /* RTCSessionDescription+JSON.swift */,
 			);
@@ -176,6 +173,8 @@
 		889C6FB42581581B00E06446 /* To Remove */ = {
 			isa = PBXGroup;
 			children = (
+				27078DA61E1C0D0C002199B5 /* RTCSessionDescription+JSON.h */,
+				27078DA71E1C0D0C002199B5 /* RTCSessionDescription+JSON.m */,
 				279F89991E1BBECE00B651E7 /* ViewController.h */,
 				279F899A1E1BBECE00B651E7 /* ViewController.m */,
 				27078DA21E1BC8D0002199B5 /* WebSocketChannel.m */,
@@ -219,7 +218,7 @@
 			isa = PBXProject;
 			attributes = {
 				LastUpgradeCheck = 1220;
-				ORGANIZATIONNAME = MineWave;
+				ORGANIZATIONNAME = H3R3;
 				TargetAttributes = {
 					279F898F1E1BBECE00B651E7 = {
 						CreatedOnToolsVersion = 8.2.1;
@@ -294,10 +293,9 @@
 			files = (
 				88855B652571C48E00951C57 /* JanusHandle.swift in Sources */,
 				88BE394B2587B8D60002C608 /* RTCSessionDescription+JSON.swift in Sources */,
-				27078DA81E1C0D0C002199B5 /* RTCSessionDescription+JSON.m in Sources */,
 				279F89981E1BBECE00B651E7 /* AppDelegate.m in Sources */,
 				889C6FAD257B413600E06446 /* JanusTransaction.swift in Sources */,
-				889C6FB62581588000E06446 /* WebSocketChannel.swift in Sources */,
+				889C6FB62581588000E06446 /* JanusVideoroom.swift in Sources */,
 				88BE394925869A030002C608 /* MainViewController.swift in Sources */,
 				889C6FAF257B480700E06446 /* JanusConnection.swift in Sources */,
 				279F89951E1BBECE00B651E7 /* main.m in Sources */,
