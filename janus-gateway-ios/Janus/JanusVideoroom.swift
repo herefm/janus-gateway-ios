@@ -16,13 +16,13 @@ import Foundation
 */
 
 enum ARDSignalingChannelState {
-    case kARDSignalingChannelStateClosed
-    case kARDSignalingChannelStateOpen
-    case kARDSignalingChannelStateCreate
-    case kARDSignalingChannelStateAttach
-    case kARDSignalingChannelStateJoin
-    case kARDSignalingChannelStateOffer
-    case kARDSignalingChannelStateError
+    case closed
+    case open
+    case create
+    case attach
+    case join
+    case offer
+    case error
 };
 
 @objc protocol VideoroomDelegate {
@@ -51,16 +51,17 @@ enum ARDSignalingChannelState {
 
     @synthesize state = _state;
 */
-    var state: ARDSignalingChannelState = .kARDSignalingChannelStateClosed
+    private var state: ARDSignalingChannelState = .closed
 
-    private var url: URL
     private var session: URLSession!
     private var socket: URLSessionWebSocketTask!
     private var sessionId: UInt64!
     private var keepAliveTimer: Timer!
-    private var transDict: Dictionary<String, JanusTransaction>
-    private var handleDict: Dictionary<UInt64, JanusHandle>
-    private var feedDict: Dictionary<String, JanusHandle>
+    private var transDict: [String: JanusTransaction] = [:]
+    private var handleDict: [UInt64: JanusHandle] = [:]
+    private var feedDict: [String: JanusHandle] = [:]
+
+    private let url: URL
     private let roomName: String
     private let userDisplayName: String
 
@@ -88,9 +89,6 @@ enum ARDSignalingChannelState {
         self.url = URL(string: url)!
         self.roomName = roomName
         self.userDisplayName = userName
-        self.transDict = Dictionary()
-        self.handleDict = Dictionary()
-        self.feedDict = Dictionary()
         super.init()
 
         self.session = URLSession(configuration: .default, delegate: self, delegateQueue: nil)
@@ -128,7 +126,7 @@ enum ARDSignalingChannelState {
           )
           self.alert = alert
  */
-          self.state = .kARDSignalingChannelStateError;
+          self.state = .error;
           return
         case .success(let message):
           switch message {
@@ -163,8 +161,8 @@ enum ARDSignalingChannelState {
     }
 
     public func disconnect() {
-        if (state == .kARDSignalingChannelStateClosed ||
-                state == .kARDSignalingChannelStateError) {
+        if (state == .closed ||
+                state == .error) {
             return
         }
         socket.cancel(with: .goingAway, reason: nil)
@@ -257,7 +255,7 @@ enum ARDSignalingChannelState {
             self.publisherJoinRoom(handle);
         }
         jt.error = { (result) in
-            self.RTCLogError("JanusTransaction error :(")
+            self.RTCLogError("JanusTransaction error :( \(result)")
         }
 
         transDict[transaction] = jt;
@@ -813,7 +811,7 @@ enum ARDSignalingChannelState {
 extension JanusVideoroom: URLSessionWebSocketDelegate {
     func urlSession(_ session: URLSession, webSocketTask: URLSessionWebSocketTask, didOpenWithProtocol protocol: String?) {
         RTCLog("WebSocket connection opened.")
-        state = .kARDSignalingChannelStateOpen;
+        state = .open;
         self.createSession()
     }
 
@@ -831,7 +829,7 @@ extension JanusVideoroom: URLSessionWebSocketDelegate {
 */
 
         self.RTCLogInfo("WebSocket closed with code: \(closeCode)");
-        self.state = .kARDSignalingChannelStateClosed
+        self.state = .closed
         keepAliveTimer.invalidate();
     }
     
