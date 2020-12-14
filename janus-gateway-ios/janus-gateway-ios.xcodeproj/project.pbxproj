@@ -13,7 +13,6 @@
 		279387501E9E93FA001060A2 /* WebRTC.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 279F89AA1E1BBFD300B651E7 /* WebRTC.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		279F89951E1BBECE00B651E7 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 279F89941E1BBECE00B651E7 /* main.m */; };
 		279F89981E1BBECE00B651E7 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 279F89971E1BBECE00B651E7 /* AppDelegate.m */; };
-		279F899B1E1BBECE00B651E7 /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 279F899A1E1BBECE00B651E7 /* ViewController.m */; };
 		279F899E1E1BBECE00B651E7 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 279F899C1E1BBECE00B651E7 /* Main.storyboard */; };
 		279F89A01E1BBECE00B651E7 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 279F899F1E1BBECE00B651E7 /* Assets.xcassets */; };
 		279F89A31E1BBECE00B651E7 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 279F89A11E1BBECE00B651E7 /* LaunchScreen.storyboard */; };
@@ -21,6 +20,8 @@
 		889C6FAD257B413600E06446 /* JanusTransaction.swift in Sources */ = {isa = PBXBuildFile; fileRef = 889C6FAC257B413600E06446 /* JanusTransaction.swift */; };
 		889C6FAF257B480700E06446 /* JanusConnection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 889C6FAE257B480700E06446 /* JanusConnection.swift */; };
 		889C6FB62581588000E06446 /* WebSocketChannel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 889C6FB52581588000E06446 /* WebSocketChannel.swift */; };
+		88BE394925869A030002C608 /* MainViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 88BE394825869A030002C608 /* MainViewController.swift */; };
+		88BE394B2587B8D60002C608 /* RTCSessionDescription+JSON.swift in Sources */ = {isa = PBXBuildFile; fileRef = 88BE394A2587B8D60002C608 /* RTCSessionDescription+JSON.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -74,6 +75,8 @@
 		889C6FAC257B413600E06446 /* JanusTransaction.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JanusTransaction.swift; sourceTree = "<group>"; };
 		889C6FAE257B480700E06446 /* JanusConnection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JanusConnection.swift; sourceTree = "<group>"; };
 		889C6FB52581588000E06446 /* WebSocketChannel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebSocketChannel.swift; sourceTree = "<group>"; };
+		88BE394825869A030002C608 /* MainViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainViewController.swift; sourceTree = "<group>"; };
+		88BE394A2587B8D60002C608 /* RTCSessionDescription+JSON.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "RTCSessionDescription+JSON.swift"; sourceTree = "<group>"; };
 		B0EDAAEFD9A7DD4C14599CFA /* libPods-Janus.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-Janus.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		D10966B05AAC6A5B5314B7E0 /* Pods-janus-gateway-ios.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-janus-gateway-ios.release.xcconfig"; path = "Pods/Target Support Files/Pods-janus-gateway-ios/Pods-janus-gateway-ios.release.xcconfig"; sourceTree = "<group>"; };
 		DBB9CB144A52379C61B832DF /* libPods-janus-gateway-ios.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-janus-gateway-ios.a"; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -129,8 +132,6 @@
 				27078DA71E1C0D0C002199B5 /* RTCSessionDescription+JSON.m */,
 				279F89961E1BBECE00B651E7 /* AppDelegate.h */,
 				279F89971E1BBECE00B651E7 /* AppDelegate.m */,
-				279F89991E1BBECE00B651E7 /* ViewController.h */,
-				279F899A1E1BBECE00B651E7 /* ViewController.m */,
 				88855B642571C48E00951C57 /* JanusHandle.swift */,
 				889C6FAC257B413600E06446 /* JanusTransaction.swift */,
 				889C6FAE257B480700E06446 /* JanusConnection.swift */,
@@ -142,6 +143,8 @@
 				279F89931E1BBECE00B651E7 /* Supporting Files */,
 				88855B632571C48D00951C57 /* janus-gateway-ios-Bridging-Header.h */,
 				889C6FB52581588000E06446 /* WebSocketChannel.swift */,
+				88BE394825869A030002C608 /* MainViewController.swift */,
+				88BE394A2587B8D60002C608 /* RTCSessionDescription+JSON.swift */,
 			);
 			path = Janus;
 			sourceTree = "<group>";
@@ -173,6 +176,8 @@
 		889C6FB42581581B00E06446 /* To Remove */ = {
 			isa = PBXGroup;
 			children = (
+				279F89991E1BBECE00B651E7 /* ViewController.h */,
+				279F899A1E1BBECE00B651E7 /* ViewController.m */,
 				27078DA21E1BC8D0002199B5 /* WebSocketChannel.m */,
 				27078DA31E1BC8D0002199B5 /* WebSocketChannel.h */,
 				27078DC01E1E3E2C002199B5 /* JanusConnection.h */,
@@ -213,7 +218,7 @@
 		279F89881E1BBECE00B651E7 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastUpgradeCheck = 0820;
+				LastUpgradeCheck = 1220;
 				ORGANIZATIONNAME = MineWave;
 				TargetAttributes = {
 					279F898F1E1BBECE00B651E7 = {
@@ -288,11 +293,12 @@
 			buildActionMask = 2147483647;
 			files = (
 				88855B652571C48E00951C57 /* JanusHandle.swift in Sources */,
-				279F899B1E1BBECE00B651E7 /* ViewController.m in Sources */,
+				88BE394B2587B8D60002C608 /* RTCSessionDescription+JSON.swift in Sources */,
 				27078DA81E1C0D0C002199B5 /* RTCSessionDescription+JSON.m in Sources */,
 				279F89981E1BBECE00B651E7 /* AppDelegate.m in Sources */,
 				889C6FAD257B413600E06446 /* JanusTransaction.swift in Sources */,
 				889C6FB62581588000E06446 /* WebSocketChannel.swift in Sources */,
+				88BE394925869A030002C608 /* MainViewController.swift in Sources */,
 				889C6FAF257B480700E06446 /* JanusConnection.swift in Sources */,
 				279F89951E1BBECE00B651E7 /* main.m in Sources */,
 			);
@@ -324,20 +330,30 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
 				CLANG_CXX_LIBRARY = "libc++";
 				CLANG_ENABLE_MODULES = YES;
 				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
 				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
 				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
 				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
 				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
 				CLANG_WARN_EMPTY_BODY = YES;
 				CLANG_WARN_ENUM_CONVERSION = YES;
 				CLANG_WARN_INFINITE_RECURSION = YES;
 				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
 				CLANG_WARN_SUSPICIOUS_MOVE = YES;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
@@ -372,20 +388,30 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
 				CLANG_CXX_LIBRARY = "libc++";
 				CLANG_ENABLE_MODULES = YES;
 				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
 				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
 				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
 				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
 				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
 				CLANG_WARN_EMPTY_BODY = YES;
 				CLANG_WARN_ENUM_CONVERSION = YES;
 				CLANG_WARN_INFINITE_RECURSION = YES;
 				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
 				CLANG_WARN_SUSPICIOUS_MOVE = YES;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
@@ -405,6 +431,7 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				SDKROOT = iphoneos;
+				SWIFT_COMPILATION_MODE = wholemodule;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VALIDATE_PRODUCT = YES;
 			};

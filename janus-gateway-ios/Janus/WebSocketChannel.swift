@@ -552,7 +552,7 @@ extension WebSocketChannel: URLSessionWebSocketDelegate {
             "body": publish,
             "jsep": jsep,
             "transaction": transaction,
-            "session_id": sessionId,
+            "session_id": sessionId!,
             "handle_id": handleId,
         ];
 

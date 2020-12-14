@@ -16,7 +16,7 @@ import Foundation
 
  */
 @objcMembers class JanusConnection: NSObject {
-    public var handleId: NSNumber?
+    public var handleId: UInt64?
     public var connection: RTCPeerConnection?
     public var videoTrack: RTCVideoTrack?
     public var videoView: RTCEAGLVideoView?

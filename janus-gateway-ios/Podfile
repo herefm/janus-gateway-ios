@@ -6,7 +6,5 @@ target 'janus-gateway-ios' do
   # use_frameworks!
 
   # Pods for Janus
-#
-pod 'SocketRocket'
 
 end
