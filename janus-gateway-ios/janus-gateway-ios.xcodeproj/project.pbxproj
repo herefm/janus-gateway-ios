@@ -141,7 +141,6 @@
 				88855B632571C48D00951C57 /* janus-gateway-ios-Bridging-Header.h */,
 				88BE394825869A030002C608 /* MainViewController.swift */,
 				88BE394A2587B8D60002C608 /* RTCSessionDescription+JSON.swift */,
-				88BE394E258808740002C608 /* VideoroomStreamController.swift */,
 			);
 			path = Janus;
 			sourceTree = "<group>";
@@ -192,6 +191,7 @@
 		88BE394D2588077C0002C608 /* Videoroom */ = {
 			isa = PBXGroup;
 			children = (
+				88BE394E258808740002C608 /* VideoroomStreamController.swift */,
 				889C6FB52581588000E06446 /* JanusVideoroom.swift */,
 				88855B642571C48E00951C57 /* JanusHandle.swift */,
 				889C6FAC257B413600E06446 /* JanusTransaction.swift */,
