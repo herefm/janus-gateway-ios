@@ -38,19 +38,8 @@ enum ARDSignalingChannelState {
 
     static let kJanus = "janus"
 
-    /*
-    @implementation WebSocketChannel {
-        NSURL *_url;
-        SRWebSocket *_socket;
-        NSNumber *sessionId;
-        NSTimer *keepAliveTimer;
-        NSMutableDictionary *transDict;
-        NSMutableDictionary *handleDict;
-        NSMutableDictionary *feedDict;
-    }
+    public private(set) var handleDict: [UInt64: JanusHandle] = [:]
 
-    @synthesize state = _state;
-*/
     private var state: ARDSignalingChannelState = .closed
 
     private var session: URLSession!
@@ -58,7 +47,6 @@ enum ARDSignalingChannelState {
     private var sessionId: UInt64!
     private var keepAliveTimer: Timer!
     private var transDict: [String: JanusTransaction] = [:]
-    private var handleDict: [UInt64: JanusHandle] = [:]
     private var feedDict: [String: JanusHandle] = [:]
 
     private let url: URL

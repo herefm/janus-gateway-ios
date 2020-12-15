@@ -21,6 +21,7 @@
 		889C6FB62581588000E06446 /* JanusVideoroom.swift in Sources */ = {isa = PBXBuildFile; fileRef = 889C6FB52581588000E06446 /* JanusVideoroom.swift */; };
 		88BE394925869A030002C608 /* MainViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 88BE394825869A030002C608 /* MainViewController.swift */; };
 		88BE394B2587B8D60002C608 /* RTCSessionDescription+JSON.swift in Sources */ = {isa = PBXBuildFile; fileRef = 88BE394A2587B8D60002C608 /* RTCSessionDescription+JSON.swift */; };
+		88BE394F258808740002C608 /* VideoroomStreamController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 88BE394E258808740002C608 /* VideoroomStreamController.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -76,6 +77,7 @@
 		889C6FB52581588000E06446 /* JanusVideoroom.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JanusVideoroom.swift; sourceTree = "<group>"; };
 		88BE394825869A030002C608 /* MainViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainViewController.swift; sourceTree = "<group>"; };
 		88BE394A2587B8D60002C608 /* RTCSessionDescription+JSON.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "RTCSessionDescription+JSON.swift"; sourceTree = "<group>"; };
+		88BE394E258808740002C608 /* VideoroomStreamController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VideoroomStreamController.swift; sourceTree = "<group>"; };
 		B0EDAAEFD9A7DD4C14599CFA /* libPods-Janus.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-Janus.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		D10966B05AAC6A5B5314B7E0 /* Pods-janus-gateway-ios.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-janus-gateway-ios.release.xcconfig"; path = "Pods/Target Support Files/Pods-janus-gateway-ios/Pods-janus-gateway-ios.release.xcconfig"; sourceTree = "<group>"; };
 		DBB9CB144A52379C61B832DF /* libPods-janus-gateway-ios.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-janus-gateway-ios.a"; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -126,12 +128,10 @@
 		279F89921E1BBECE00B651E7 /* Janus */ = {
 			isa = PBXGroup;
 			children = (
+				88BE394D2588077C0002C608 /* Videoroom */,
 				889C6FB42581581B00E06446 /* To Remove */,
 				279F89961E1BBECE00B651E7 /* AppDelegate.h */,
 				279F89971E1BBECE00B651E7 /* AppDelegate.m */,
-				88855B642571C48E00951C57 /* JanusHandle.swift */,
-				889C6FAC257B413600E06446 /* JanusTransaction.swift */,
-				889C6FAE257B480700E06446 /* JanusConnection.swift */,
 				279F899C1E1BBECE00B651E7 /* Main.storyboard */,
 				279F899F1E1BBECE00B651E7 /* Assets.xcassets */,
 				279F89A11E1BBECE00B651E7 /* LaunchScreen.storyboard */,
@@ -139,9 +139,9 @@
 				279F89AA1E1BBFD300B651E7 /* WebRTC.framework */,
 				279F89931E1BBECE00B651E7 /* Supporting Files */,
 				88855B632571C48D00951C57 /* janus-gateway-ios-Bridging-Header.h */,
-				889C6FB52581588000E06446 /* JanusVideoroom.swift */,
 				88BE394825869A030002C608 /* MainViewController.swift */,
 				88BE394A2587B8D60002C608 /* RTCSessionDescription+JSON.swift */,
+				88BE394E258808740002C608 /* VideoroomStreamController.swift */,
 			);
 			path = Janus;
 			sourceTree = "<group>";
@@ -187,6 +187,17 @@
 				27078DBE1E1E1932002199B5 /* JanusTransaction.m */,
 			);
 			name = "To Remove";
+			sourceTree = "<group>";
+		};
+		88BE394D2588077C0002C608 /* Videoroom */ = {
+			isa = PBXGroup;
+			children = (
+				889C6FB52581588000E06446 /* JanusVideoroom.swift */,
+				88855B642571C48E00951C57 /* JanusHandle.swift */,
+				889C6FAC257B413600E06446 /* JanusTransaction.swift */,
+				889C6FAE257B480700E06446 /* JanusConnection.swift */,
+			);
+			name = Videoroom;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -294,6 +305,7 @@
 				88855B652571C48E00951C57 /* JanusHandle.swift in Sources */,
 				88BE394B2587B8D60002C608 /* RTCSessionDescription+JSON.swift in Sources */,
 				279F89981E1BBECE00B651E7 /* AppDelegate.m in Sources */,
+				88BE394F258808740002C608 /* VideoroomStreamController.swift in Sources */,
 				889C6FAD257B413600E06446 /* JanusTransaction.swift in Sources */,
 				889C6FB62581588000E06446 /* JanusVideoroom.swift in Sources */,
 				88BE394925869A030002C608 /* MainViewController.swift in Sources */,
