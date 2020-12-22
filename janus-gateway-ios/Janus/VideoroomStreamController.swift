@@ -21,7 +21,8 @@ class VideoroomStreamController: NSObject {
 
     public var localCaptureSession: AVCaptureSession?
 
-    private(set) var cameraPosition: AVCaptureDevice.Position = .front
+    private(set) var cameraPosition: AVCaptureDevice.Position? = .front
+    private(set) var isAudioEnabled: Bool = true
 
     var websocket: JanusVideoroom!
     var peerConnectionDict: [UInt64: JanusConnection] = [:]
@@ -33,15 +34,21 @@ class VideoroomStreamController: NSObject {
 
     var factory: RTCPeerConnectionFactory!
 
-    init(url: String, roomName: String, userName: String, delegate: VideoroomStreamControllerDelegate?) {
+    init(url: String, roomName: String, userName: String, delegate: VideoroomStreamControllerDelegate?, cameraPosition: AVCaptureDevice.Position? = .front, isAudioEnabled: Bool = true) {
         self.delegate = delegate
         let encoderFactory = RTCDefaultVideoEncoderFactory()
         let decoderFactory = RTCDefaultVideoDecoderFactory()
         factory = RTCPeerConnectionFactory(encoderFactory: encoderFactory, decoderFactory: decoderFactory)
         super.init()
+        self.cameraPosition = cameraPosition
+        self.isAudioEnabled = isAudioEnabled
 
-        localVideoTrack = createLocalVideoTrack(position: cameraPosition)
-        localAudioTrack = createLocalAudioTrack()
+        if let cameraPosition = cameraPosition {
+            localVideoTrack = createLocalVideoTrack(position: cameraPosition)
+        }
+        if (isAudioEnabled) {
+            localAudioTrack = createLocalAudioTrack()
+        }
 
         self.websocket = JanusVideoroom(url: url,
                                         roomName: roomName,
@@ -49,16 +56,33 @@ class VideoroomStreamController: NSObject {
         websocket.delegate = self
     }
 
-    public func updateCameraPosition(_ position: AVCaptureDevice.Position) {
+    public func updateCameraPosition(_ position: AVCaptureDevice.Position?) {
         self.cameraPosition = position
-        localVideoTrack = createLocalVideoTrack(position: position)
 
         if let sender = publisherPeerConnection.senders.first(where: {
             $0.senderId == VideoroomStreamController.kARDVideoTrackId
         }) {
             publisherPeerConnection.removeTrack(sender)
         }
-        publisherPeerConnection.add(self.localVideoTrack!, streamIds: [VideoroomStreamController.kARDMediaStreamId])
+        if let position = position {
+            localVideoTrack = createLocalVideoTrack(position: position)
+            publisherPeerConnection.add(self.localVideoTrack!, streamIds: [VideoroomStreamController.kARDMediaStreamId])
+        }
+    }
+
+    public func setAudioEnabled(_ audioEnabled: Bool) {
+        self.isAudioEnabled = audioEnabled
+
+        if (!audioEnabled) {
+            if let sender = publisherPeerConnection.senders.first(where: {
+                $0.senderId == VideoroomStreamController.kARDAudioTrackId
+            }) {
+                publisherPeerConnection.removeTrack(sender)
+            }
+        } else {
+            localAudioTrack = createLocalAudioTrack()
+            publisherPeerConnection.add(self.localAudioTrack!, streamIds: [VideoroomStreamController.kARDMediaStreamId])
+        }
     }
 
     /*    - (RTCVideoTrack *)createLocalVideoTrack {

@@ -21,14 +21,24 @@ class MainViewController: UIViewController {
                                                               delegate: self)
 
         let cameraSwitchButton = UIButton(type: .roundedRect)
-        cameraSwitchButton.frame = CGRect(x: 200, y: 20, width: 150, height: 44)
+        cameraSwitchButton.frame = CGRect(x: 200, y: 40, width: 150, height: 44)
         cameraSwitchButton.setTitle("Back/Front", for: .normal)
         cameraSwitchButton.addTarget(self, action: #selector(switchCamera), for: .touchUpInside)
         self.view.addSubview(cameraSwitchButton)
+
+        let muteButton = UIButton(type: .roundedRect)
+        muteButton.frame = CGRect(x: 200, y: 90, width: 150, height: 44)
+        muteButton.setTitle("Mute/Unmute", for: .normal)
+        muteButton.addTarget(self, action: #selector(toggleMute), for: .touchUpInside)
+        self.view.addSubview(muteButton)
     }
 
     @objc func switchCamera(_ sender: UIControl) {
         videoroomStreamController.updateCameraPosition(videoroomStreamController.cameraPosition == .back ? .front : .back)
+    }
+
+    @objc func toggleMute(_ sender: UIControl) {
+        videoroomStreamController.setAudioEnabled(!videoroomStreamController.isAudioEnabled)
     }
 
 
