@@ -8,8 +8,6 @@
 
 /* Begin PBXBuildFile section */
 		1B68AE20884D179BD06D1F20 /* libPods-janus-gateway-ios.a in Frameworks */ = {isa = PBXBuildFile; fileRef = DBB9CB144A52379C61B832DF /* libPods-janus-gateway-ios.a */; };
-		2793874F1E9E93FA001060A2 /* WebRTC.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 279F89AA1E1BBFD300B651E7 /* WebRTC.framework */; };
-		279387501E9E93FA001060A2 /* WebRTC.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 279F89AA1E1BBFD300B651E7 /* WebRTC.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		279F89951E1BBECE00B651E7 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 279F89941E1BBECE00B651E7 /* main.m */; };
 		279F89981E1BBECE00B651E7 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 279F89971E1BBECE00B651E7 /* AppDelegate.m */; };
 		279F899E1E1BBECE00B651E7 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 279F899C1E1BBECE00B651E7 /* Main.storyboard */; };
@@ -31,7 +29,6 @@
 			dstPath = "";
 			dstSubfolderSpec = 10;
 			files = (
-				279387501E9E93FA001060A2 /* WebRTC.framework in Embed Frameworks */,
 			);
 			name = "Embed Frameworks";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -68,7 +65,6 @@
 		279F899F1E1BBECE00B651E7 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		279F89A21E1BBECE00B651E7 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		279F89A41E1BBECE00B651E7 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		279F89AA1E1BBFD300B651E7 /* WebRTC.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = WebRTC.framework; sourceTree = "<group>"; };
 		639F7C4E4E0B1E1FBC672BD9 /* Pods-Janus.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Janus.debug.xcconfig"; path = "Pods/Target Support Files/Pods-Janus/Pods-Janus.debug.xcconfig"; sourceTree = "<group>"; };
 		88855B632571C48D00951C57 /* janus-gateway-ios-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "janus-gateway-ios-Bridging-Header.h"; sourceTree = "<group>"; };
 		88855B642571C48E00951C57 /* JanusHandle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JanusHandle.swift; sourceTree = "<group>"; };
@@ -89,7 +85,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				1B68AE20884D179BD06D1F20 /* libPods-janus-gateway-ios.a in Frameworks */,
-				2793874F1E9E93FA001060A2 /* WebRTC.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -129,14 +124,13 @@
 			isa = PBXGroup;
 			children = (
 				88BE394D2588077C0002C608 /* Videoroom */,
-				889C6FB42581581B00E06446 /* To Remove */,
+				889C6FB42581581B00E06446 /* Junk */,
 				279F89961E1BBECE00B651E7 /* AppDelegate.h */,
 				279F89971E1BBECE00B651E7 /* AppDelegate.m */,
 				279F899C1E1BBECE00B651E7 /* Main.storyboard */,
 				279F899F1E1BBECE00B651E7 /* Assets.xcassets */,
 				279F89A11E1BBECE00B651E7 /* LaunchScreen.storyboard */,
 				279F89A41E1BBECE00B651E7 /* Info.plist */,
-				279F89AA1E1BBFD300B651E7 /* WebRTC.framework */,
 				279F89931E1BBECE00B651E7 /* Supporting Files */,
 				88855B632571C48D00951C57 /* janus-gateway-ios-Bridging-Header.h */,
 				88BE394825869A030002C608 /* MainViewController.swift */,
@@ -169,7 +163,7 @@
 			name = Frameworks;
 			sourceTree = "<group>";
 		};
-		889C6FB42581581B00E06446 /* To Remove */ = {
+		889C6FB42581581B00E06446 /* Junk */ = {
 			isa = PBXGroup;
 			children = (
 				27078DA61E1C0D0C002199B5 /* RTCSessionDescription+JSON.h */,
@@ -185,7 +179,7 @@
 				27078DBD1E1E1932002199B5 /* JanusTransaction.h */,
 				27078DBE1E1E1932002199B5 /* JanusTransaction.m */,
 			);
-			name = "To Remove";
+			name = Junk;
 			sourceTree = "<group>";
 		};
 		88BE394D2588077C0002C608 /* Videoroom */ = {
@@ -212,6 +206,7 @@
 				279F898D1E1BBECE00B651E7 /* Frameworks */,
 				279F898E1E1BBECE00B651E7 /* Resources */,
 				279387511E9E93FA001060A2 /* Embed Frameworks */,
+				E452C927322430C608511F9C /* [CP] Embed Pods Frameworks */,
 			);
 			buildRules = (
 			);
@@ -293,6 +288,24 @@
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			showEnvVarsInLog = 0;
+		};
+		E452C927322430C608511F9C /* [CP] Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-janus-gateway-ios/Pods-janus-gateway-ios-frameworks.sh",
+				"${PODS_ROOT}/GoogleWebRTC/Frameworks/frameworks/WebRTC.framework",
+			);
+			name = "[CP] Embed Pods Frameworks";
+			outputPaths = (
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/WebRTC.framework",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-janus-gateway-ios/Pods-janus-gateway-ios-frameworks.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
 /* End PBXShellScriptBuildPhase section */

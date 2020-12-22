@@ -15,11 +15,20 @@ class MainViewController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        videoroomStreamController = VideoroomStreamController(url: "wss://v.here.fm:443/janus",
-                                                              roomName: "tCPJmclqm5jLwBSbDk83",
+        videoroomStreamController = VideoroomStreamController(url: "wss://v2.here.fm:443/janus",
+                                                              roomName: "ZInARgyrVYXjj2NukBNu",
                                                               userName: "j9s1h5MVf2OJ5eHIK2zU43uJufk2",
                                                               delegate: self)
 
+        let cameraSwitchButton = UIButton(type: .roundedRect)
+        cameraSwitchButton.frame = CGRect(x: 200, y: 20, width: 150, height: 44)
+        cameraSwitchButton.setTitle("Back/Front", for: .normal)
+        cameraSwitchButton.addTarget(self, action: #selector(switchCamera), for: .touchUpInside)
+        self.view.addSubview(cameraSwitchButton)
+    }
+
+    @objc func switchCamera(_ sender: UIControl) {
+        videoroomStreamController.updateCameraPosition(videoroomStreamController.cameraPosition == .back ? .front : .back)
     }
 
 
@@ -43,19 +52,8 @@ extension MainViewController: VideoroomStreamControllerDelegate {
 }
 
 
-extension MainViewController: RTCEAGLVideoViewDelegate {
-    /*
-     - (void)videoView:(RTCEAGLVideoView *)videoView didChangeVideoSize:(CGSize)size {
-         CGRect rect = videoView.frame;
-         rect.size = size;
-         NSLog(@"========didChangeVideoSize %fx%f", size.width, size.height);
-         videoView.frame = rect;
-     }
-     */
-    func videoView(_ videoView: RTCEAGLVideoView, didChangeVideoSize size: CGSize) {
-//        var rect = videoView.frame
-//        rect.size = size
-//        print("========didChangeVideoSize \(size.width)x\(size.height)");
-//        videoView.frame = rect
+extension MainViewController: RTCVideoViewDelegate {
+    func videoView(_ videoView: RTCVideoRenderer, didChangeVideoSize size: CGSize) {
+        // TODO
     }
 }

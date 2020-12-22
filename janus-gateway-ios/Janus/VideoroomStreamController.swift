@@ -21,26 +21,44 @@ class VideoroomStreamController: NSObject {
 
     public var localCaptureSession: AVCaptureSession?
 
+    private(set) var cameraPosition: AVCaptureDevice.Position = .front
+
     var websocket: JanusVideoroom!
     var peerConnectionDict: [UInt64: JanusConnection] = [:]
     var publisherPeerConnection: RTCPeerConnection!
     var localVideoTrack: RTCVideoTrack?
     var localAudioTrack: RTCAudioTrack?
     var delegate: VideoroomStreamControllerDelegate?
+    var capturer: RTCCameraVideoCapturer?
 
     var factory: RTCPeerConnectionFactory!
 
     init(url: String, roomName: String, userName: String, delegate: VideoroomStreamControllerDelegate?) {
+        self.delegate = delegate
+        let encoderFactory = RTCDefaultVideoEncoderFactory()
+        let decoderFactory = RTCDefaultVideoDecoderFactory()
+        factory = RTCPeerConnectionFactory(encoderFactory: encoderFactory, decoderFactory: decoderFactory)
+        super.init()
+
+        localVideoTrack = createLocalVideoTrack(position: cameraPosition)
+        localAudioTrack = createLocalAudioTrack()
+
         self.websocket = JanusVideoroom(url: url,
                                         roomName: roomName,
                                         userName: userName)
-        self.delegate = delegate
-        factory = RTCPeerConnectionFactory()
-        super.init()
-
         websocket.delegate = self
-        localVideoTrack = createLocalVideoTrack()
-        localAudioTrack = createLocalAudioTrack()
+    }
+
+    public func updateCameraPosition(_ position: AVCaptureDevice.Position) {
+        self.cameraPosition = position
+        localVideoTrack = createLocalVideoTrack(position: position)
+
+        if let sender = publisherPeerConnection.senders.first(where: {
+            $0.senderId == VideoroomStreamController.kARDVideoTrackId
+        }) {
+            publisherPeerConnection.removeTrack(sender)
+        }
+        publisherPeerConnection.add(self.localVideoTrack!, streamIds: [VideoroomStreamController.kARDMediaStreamId])
     }
 
     /*    - (RTCVideoTrack *)createLocalVideoTrack {
@@ -54,14 +72,38 @@ class VideoroomStreamController: NSObject {
 
             return localVideoTrack;
         }*/
-    private func createLocalVideoTrack() -> RTCVideoTrack {
-        let cameraConstraints = currentMediaVideoConstraints()
-        let source = factory.avFoundationVideoSource(with: cameraConstraints)
-        let localVideoTrack = factory.videoTrack(with: source, trackId: VideoroomStreamController.kARDAudioTrackId)
-        localCaptureSession = source.captureSession
-        delegate?.localCaptureSessionReady(source.captureSession)
+    private func createLocalVideoTrack(position: AVCaptureDevice.Position) -> RTCVideoTrack? {
 
-        return localVideoTrack;
+        let source = factory.videoSource()
+        let devices = RTCCameraVideoCapturer.captureDevices()
+        guard let camera = devices.first(where: { $0.position == position }) else {
+            return nil
+        }
+
+        // here we have a bunch of formats from tiny to up to 4k. Let's pick a reasonable one
+        let formats = RTCCameraVideoCapturer.supportedFormats(for: camera)
+
+        guard let format = formats.first(where: { (format) -> Bool in
+            let formatDescription = format.formatDescription
+            let dimensions = CMVideoFormatDescriptionGetDimensions(formatDescription)
+            return dimensions.width == 480
+        }) else {
+            print("Can't find a good capture resolution")
+            return nil
+        }
+
+        let fps = format.videoSupportedFrameRateRanges.first?.maxFrameRate
+        // or take smth in between min..max, i.e. 24 fps and not 30, to reduce gpu/cpu use
+
+        let intFps = Int(min(fps ?? 30, 30))
+        let capturer = RTCCameraVideoCapturer(delegate: source)
+        capturer.startCapture(with: camera, format: format, fps: intFps)
+        let videoTrack = self.factory.videoTrack(with: source, trackId: VideoroomStreamController.kARDVideoTrackId)
+
+        localCaptureSession = capturer.captureSession
+        delegate?.localCaptureSessionReady(capturer.captureSession)
+        self.capturer = capturer
+        return videoTrack;
     }
 
     /*
@@ -83,17 +125,7 @@ class VideoroomStreamController: NSObject {
          return mediaConstraintsDictionary;
      }     */
     func currentMediaVideoConstraints() -> RTCMediaConstraints {
-        let widthConstraint = "480"
-        let heightConstraint = "360"
-        let frameRateConstraint = "20"
-        let constraints = [
-            kRTCMediaConstraintsMinWidth : widthConstraint,
-            kRTCMediaConstraintsMaxWidth : widthConstraint,
-            kRTCMediaConstraintsMinHeight : heightConstraint,
-            kRTCMediaConstraintsMaxHeight : heightConstraint,
-            kRTCMediaConstraintsMaxFrameRate: frameRateConstraint
-        ]
-        return RTCMediaConstraints(mandatoryConstraints: constraints, optionalConstraints: nil)
+        return RTCMediaConstraints(mandatoryConstraints: nil, optionalConstraints: nil)
     }
 
     /*
@@ -127,20 +159,22 @@ class VideoroomStreamController: NSObject {
      */
 
     func defaultMediaAudioConstraints() -> RTCMediaConstraints {
-        return RTCMediaConstraints(mandatoryConstraints: [kRTCMediaConstraintsLevelControl: kRTCMediaConstraintsValueFalse],
+        return RTCMediaConstraints(mandatoryConstraints: nil,
                                    optionalConstraints: nil)
     }
 }
 
 extension VideoroomStreamController: VideoroomDelegate {
-    
+
     /*
      - (void)onPublisherJoined: (NSUInteger) handleId {
      [self offerPeerConnection:[[NSNumber alloc] initWithUnsignedLong:handleId]];
      }
      */
     func onPublisherJoined(_ handleId: UInt64) {
-        offerPeerConnection(handleId: handleId)
+        DispatchQueue.main.async {
+            self.offerPeerConnection(handleId: handleId)
+        }
     }
 
     /*
@@ -153,15 +187,17 @@ extension VideoroomStreamController: VideoroomDelegate {
      }
      */
     func onPublisherRemoteJsep(_ handleId: UInt64, jsep: Dictionary<String, Any>) {
-        let jc = peerConnectionDict[handleId]
-        guard let answerDescription = RTCSessionDescription.description(from: jsep) else {
-            return
-        }
-        jc?.connection?.setRemoteDescription(answerDescription, completionHandler: { (err) in
-            if let err = err {
-                print("Error setting remote description: \(err)")
+        DispatchQueue.main.async {
+            let jc = self.peerConnectionDict[handleId]
+            guard let answerDescription = RTCSessionDescription.description(from: jsep) else {
+                return
             }
-        })
+            jc?.connection?.setRemoteDescription(answerDescription, completionHandler: { (err) in
+                if let err = err {
+                    print("Error setting remote description: \(err)")
+                }
+            })
+        }
     }
 
     /*
@@ -328,50 +364,25 @@ extension VideoroomStreamController: VideoroomDelegate {
      }
      */
 
+    private func addPublisherStreamWithTracks() {
+        let stream = factory.mediaStream(withStreamId: VideoroomStreamController.kARDMediaStreamId)
+        publisherPeerConnection.add(stream)
+
+        if let videoTrack = localVideoTrack {
+            stream.addVideoTrack(videoTrack)
+            let sender = publisherPeerConnection.add(videoTrack, streamIds: [VideoroomStreamController.kARDMediaStreamId])
+            print("Video sender result: \(sender)")
+        }
+        if let audioTrack = localAudioTrack {
+            stream.addAudioTrack(audioTrack)
+            let sender = publisherPeerConnection.add(audioTrack, streamIds: [VideoroomStreamController.kARDMediaStreamId])
+            print("Audio sender result: \(sender)")
+        }
+    }
+
     private func createPublisherPeerConnection() {
         publisherPeerConnection = createPeerConnection()
-        // TODO Is this necessary?
-        createAudioSender(publisherPeerConnection)
-        createVideoSender(publisherPeerConnection)
-    }
-    /*
-     - (RTCRtpSender *)createAudioSender:(RTCPeerConnection *)peerConnection {
-     RTCRtpSender *sender = [peerConnection senderWithKind:kRTCMediaStreamTrackKindAudio streamId:kARDMediaStreamId];
-     if (localAudioTrack) {
-     sender.track = localAudioTrack;
-     }
-     return sender;
-     }
-     */
-    private func createAudioSender(_ peerConnection: RTCPeerConnection) -> RTCRtpSender {
-        let sender = peerConnection.sender(withKind: kRTCMediaStreamTrackKindAudio,
-                                           streamId: VideoroomStreamController.kARDMediaStreamId)
-        if (localAudioTrack != nil) {
-            sender.track = localAudioTrack
-        }
-        return sender
-    }
-
-    /*
-     - (RTCRtpSender *)createVideoSender:(RTCPeerConnection *)peerConnection {
-     RTCRtpSender *sender = [peerConnection senderWithKind:kRTCMediaStreamTrackKindVideo
-     streamId:kARDMediaStreamId];
-     if (localTrack) {
-     sender.track = localTrack;
-     }
-
-     return sender;
-     }*/
-
-
-    private func createVideoSender(_ peerConnection: RTCPeerConnection) -> RTCRtpSender {
-        let sender = peerConnection.sender(withKind: kRTCMediaStreamTrackKindVideo,
-                                           streamId: VideoroomStreamController.kARDMediaStreamId)
-        if (localVideoTrack != nil) {
-            sender.track = localVideoTrack
-        }
-
-        return sender
+        addPublisherStreamWithTracks()
     }
 
     /*
@@ -436,7 +447,7 @@ extension VideoroomStreamController: VideoroomDelegate {
 
 extension VideoroomStreamController: RTCPeerConnectionDelegate {
     func peerConnection(_ peerConnection: RTCPeerConnection, didChange stateChanged: RTCSignalingState) {
-        print("Signaling state changed \(stateChanged)")
+        print("Signaling state changed \(stateChanged.rawValue)")
     }
 
     /*
