@@ -465,6 +465,7 @@ enum ARDSignalingChannelState {
             "request": "configure",
             "audio": true,
             "video": true,
+            "data": true,
         ]
 
         let type = RTCSessionDescription.string(for: sdp.type)

@@ -12,6 +12,7 @@ import AVFoundation
 protocol VideoroomStreamControllerDelegate {
     func videoroomDidAdd(_ userId: String?, streamView: RTCEAGLVideoView)
     func localCaptureSessionReady(_ captureSession: AVCaptureSession)
+    func didReceiveData(_ message: [String: Any])
 }
 
 class VideoroomStreamController: NSObject {
@@ -20,6 +21,7 @@ class VideoroomStreamController: NSObject {
     static let kARDVideoTrackId = "ARDAMSv0"
 
     public var localCaptureSession: AVCaptureSession?
+    var capturer: RTCCameraVideoCapturer?
 
     private(set) var cameraPosition: AVCaptureDevice.Position? = .front
     private(set) var isAudioEnabled: Bool = true
@@ -29,10 +31,11 @@ class VideoroomStreamController: NSObject {
     var publisherPeerConnection: RTCPeerConnection!
     var localVideoTrack: RTCVideoTrack?
     var localAudioTrack: RTCAudioTrack?
-    var delegate: VideoroomStreamControllerDelegate?
-    var capturer: RTCCameraVideoCapturer?
-
     var factory: RTCPeerConnectionFactory!
+
+    var publisherDataChannel: RTCDataChannel?
+
+    var delegate: VideoroomStreamControllerDelegate?
 
     init(url: String, roomName: String, userName: String, delegate: VideoroomStreamControllerDelegate?, cameraPosition: AVCaptureDevice.Position? = .front, isAudioEnabled: Bool = true) {
         self.delegate = delegate
@@ -82,6 +85,15 @@ class VideoroomStreamController: NSObject {
         } else {
             localAudioTrack = createLocalAudioTrack()
             publisherPeerConnection.add(self.localAudioTrack!, streamIds: [VideoroomStreamController.kARDMediaStreamId])
+        }
+    }
+
+    public func sendData(_ message: [String: Any]) {
+        do {
+            let data = try JSONSerialization.data(withJSONObject: ["data": message], options: [])
+            publisherDataChannel?.sendData(RTCDataBuffer(data: data, isBinary: false))
+        } catch {
+            print("Error encoding and sending on RTCDataChannel: \(error)")
         }
     }
 
@@ -260,6 +272,13 @@ extension VideoroomStreamController: VideoroomDelegate {
         jc.handleId = handleId
         peerConnectionDict[handleId] = jc
 
+        let dataConfig = RTCDataChannelConfiguration()
+        dataConfig.isOrdered = true
+
+        let dataChannel = peerConnection.dataChannel(forLabel: "data", configuration: dataConfig)
+        dataChannel?.delegate = self
+
+
         guard let answerDescription = RTCSessionDescription.description(from: jsep) else {
             print("Error getting answer description in subscriberHandleRemoteJsep")
             return
@@ -273,7 +292,11 @@ extension VideoroomStreamController: VideoroomDelegate {
             "OfferToReceiveAudio" : "true",
             "OfferToReceiveVideo" : "true",
         ]
-        let constraints = RTCMediaConstraints(mandatoryConstraints: mandatoryConstraints, optionalConstraints: nil)
+        let optionalConstraints = [
+            "internalSctpDataChannels": "true",
+            "DtlsSrtpKeyAgreement": "true",
+        ]
+        let constraints = RTCMediaConstraints(mandatoryConstraints: mandatoryConstraints, optionalConstraints: optionalConstraints)
         peerConnection.answer(for: constraints) { (sdp, err) in
             guard let sdp = sdp else {
                 print("SDP missing when generating answer in subscriberHandleRemoteJsep")
@@ -377,6 +400,7 @@ extension VideoroomStreamController: VideoroomDelegate {
             "OfferToReceiveAudio" : "false",
             "OfferToReceiveVideo" : "false"
         ]
+
         return RTCMediaConstraints(mandatoryConstraints: mandatoryConstraints, optionalConstraints: nil)
     }
 
@@ -402,6 +426,11 @@ extension VideoroomStreamController: VideoroomDelegate {
             let sender = publisherPeerConnection.add(audioTrack, streamIds: [VideoroomStreamController.kARDMediaStreamId])
             print("Audio sender result: \(sender)")
         }
+
+        let dataConfig = RTCDataChannelConfiguration()
+        dataConfig.isOrdered = true
+        self.publisherDataChannel = publisherPeerConnection.dataChannel(forLabel: "data", configuration: dataConfig)
+        publisherDataChannel?.delegate = self
     }
 
     private func createPublisherPeerConnection() {
@@ -584,7 +613,14 @@ extension VideoroomStreamController: RTCPeerConnectionDelegate {
     }
 
     func peerConnection(_ peerConnection: RTCPeerConnection, didOpen dataChannel: RTCDataChannel) {
-        // TODO
+        print("=========didOpenDataChannel")
+        guard let janusConnection = self.janusConnection(for: peerConnection) else {
+            print("Error: Can't find matching JanusConnection for RTCPeerConnection in didGenerateIceCandidate")
+            return
+        }
+
+        janusConnection.dataChannel = dataChannel
+        dataChannel.delegate = self
     }
 
     private func janusConnection(for peerConnection: RTCPeerConnection) -> JanusConnection? {
@@ -593,4 +629,25 @@ extension VideoroomStreamController: RTCPeerConnectionDelegate {
         }) ?? (nil, nil)
         return janusConnection
     }
+}
+
+extension VideoroomStreamController: RTCDataChannelDelegate {
+    func dataChannelDidChangeState(_ dataChannel: RTCDataChannel) {
+        print("dataChannelDidChangeState")
+    }
+
+    func dataChannel(_ dataChannel: RTCDataChannel, didReceiveMessageWith buffer: RTCDataBuffer) {
+        let data = buffer.data
+        do {
+            guard let message = try JSONSerialization.jsonObject(with: data, options: []) as? [String: Any] else {
+                print("Can't deserialize JSON message")
+                return
+            }
+            delegate?.didReceiveData(message)
+        } catch {
+            print("Can't deserialize RTCDataChannel message \(error)")
+        }
+    }
+
+
 }

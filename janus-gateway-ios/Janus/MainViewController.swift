@@ -31,6 +31,12 @@ class MainViewController: UIViewController {
         muteButton.setTitle("Mute/Unmute", for: .normal)
         muteButton.addTarget(self, action: #selector(toggleMute), for: .touchUpInside)
         self.view.addSubview(muteButton)
+
+        let sendReaction = UIButton(type: .roundedRect)
+        sendReaction.frame = CGRect(x: 200, y: 140, width: 150, height: 44)
+        sendReaction.setTitle("React", for: .normal)
+        sendReaction.addTarget(self, action: #selector(sendReactionPressed), for: .touchUpInside)
+        self.view.addSubview(sendReaction)
     }
 
     @objc func switchCamera(_ sender: UIControl) {
@@ -41,7 +47,9 @@ class MainViewController: UIViewController {
         videoroomStreamController.setAudioEnabled(!videoroomStreamController.isAudioEnabled)
     }
 
-
+    @objc func sendReactionPressed(_ sender: UIControl) {
+        videoroomStreamController.sendData(["r": "🤠", "x": 0, "y": 0])
+    }
 }
 
 extension MainViewController: VideoroomStreamControllerDelegate {
@@ -58,6 +66,10 @@ extension MainViewController: VideoroomStreamControllerDelegate {
             self.view.addSubview(localView)
         }
         localView.captureSession = captureSession
+    }
+
+    func didReceiveData(_ message: [String : Any]) {
+        print("Received Data: \(message)")
     }
 }
 
